@@ -6,6 +6,7 @@ const TRAINER1_IMG = "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-2
 const TRAINER2_IMG = "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/bc180fed-e45c-4061-be08-e3b2de5a27d7.jpg";
 const GALLERY_IMG = "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/67b70010-bf81-4d87-9637-37c9579bc9fd.jpg";
 const MY_TRAINER_IMG = "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/bucket/b98a2540-c29e-49a7-b943-f2d18682ad14.jpg";
+const MY_TRAINER_IMG_HQ = "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/bucket/31db9559-282d-4d0d-8faf-979896808042.jpg";
 
 const TEAL = "#0EA5A0";
 
@@ -17,7 +18,7 @@ const trainers = [
     experience: "8 лет опыта",
     specialization: ["Пауэрлифтинг", "Функциональный тренинг", "Реабилитация"],
     bio: "Мастер спорта по пауэрлифтингу. Специализируется на работе с новичками и спортсменами среднего уровня. Разрабатывает индивидуальные программы под цели каждого клиента.",
-    img: MY_TRAINER_IMG,
+    img: MY_TRAINER_IMG_HQ,
     reviews: [
       { author: "Михаил К.", text: "За 4 месяца увеличил жим лёжа со 80 до 120 кг. Александр знает своё дело!", stars: 5 },
       { author: "Дарья П.", text: "Помог восстановиться после травмы спины. Очень внимательный и профессиональный.", stars: 5 },
@@ -292,62 +293,44 @@ export default function Index() {
 
       {/* HERO */}
       <section id="home" className="relative min-h-screen flex items-center overflow-hidden">
+        {/* Background — trainer photo, desaturated and light-overlaid */}
         <div className="absolute inset-0">
-          <img src={HERO_IMG} alt="IST FIT" className="w-full h-full object-cover" />
+          <img
+            src={MY_TRAINER_IMG_HQ}
+            alt="IST FIT"
+            className="w-full h-full object-cover object-center"
+            style={{ filter: "saturate(0.55) brightness(1.05)" }}
+          />
+          {/* Strong left-side whitewash so text reads clean, gentle fade to right */}
           <div className="absolute inset-0"
-            style={{ background: "linear-gradient(to right, rgba(255,255,255,0.96) 42%, rgba(255,255,255,0.55) 70%, rgba(255,255,255,0.1) 100%)" }} />
+            style={{ background: "linear-gradient(100deg, rgba(255,255,255,0.97) 0%, rgba(255,255,255,0.88) 38%, rgba(255,255,255,0.45) 65%, rgba(255,255,255,0.08) 100%)" }} />
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto px-6 pt-24 pb-32 w-full">
-          <div className="grid md:grid-cols-2 gap-10 items-center">
-            {/* Left — text */}
-            <div>
-              <p className="text-xs tracking-[0.3em] uppercase mb-5" style={{ color: TEAL, fontFamily: "'Oswald', sans-serif" }}>
-                Фитнес-центр в Брянске
-              </p>
-              <h1 className="font-bold leading-none mb-6 text-foreground"
-                style={{ fontSize: "clamp(2.8rem, 7vw, 5.5rem)", lineHeight: 1.0, fontFamily: "'Oswald', sans-serif" }}>
-                СДЕЛАЙ <br />
-                <span style={{ color: TEAL }}>ПЕРВЫЙ</span>
-                <br /> ШАГ
-              </h1>
-              <p className="text-lg mb-10 text-foreground/65" style={{ lineHeight: 1.7 }}>
-                Профессиональные тренеры, современное оборудование и атмосфера, которая заряжает с первого дня.
-              </p>
-              <div className="flex gap-4 flex-wrap">
-                <button onClick={() => scrollTo("plans")}
-                  className="text-sm tracking-widest uppercase px-8 py-4 rounded-lg font-semibold transition-all hover:scale-105 text-white"
-                  style={{ background: TEAL, fontFamily: "'Oswald', sans-serif" }}>
-                  Выбрать абонемент
-                </button>
-                <button onClick={() => scrollTo("trainers")}
-                  className="text-sm tracking-widest uppercase px-8 py-4 rounded-lg font-semibold transition-all hover:scale-105 text-foreground"
-                  style={{ border: "1.5px solid #d1d5db", background: "transparent", fontFamily: "'Oswald', sans-serif" }}>
-                  Наши тренеры
-                </button>
-              </div>
-            </div>
-
-            {/* Right — trainer photo */}
-            <div className="hidden md:flex justify-end">
-              <div className="relative">
-                <div className="rounded-2xl overflow-hidden shadow-xl"
-                  style={{ width: 340, height: 440, border: `3px solid rgba(14,165,160,0.25)` }}>
-                  <img src={MY_TRAINER_IMG} alt="Тренер IST FIT" className="w-full h-full object-cover" />
-                </div>
-                <div className="absolute -bottom-5 -left-5 rounded-xl px-5 py-4 shadow-lg"
-                  style={{ background: "#fff", border: `1px solid rgba(14,165,160,0.2)` }}>
-                  <div className="text-xs text-muted-foreground mb-0.5">Тренер центра</div>
-                  <div className="font-semibold text-foreground text-sm" style={{ fontFamily: "'Oswald', sans-serif" }}>
-                    Александр Морозов
-                  </div>
-                  <div className="text-xs mt-0.5" style={{ color: TEAL }}>8 лет опыта</div>
-                </div>
-                <div className="absolute -top-4 -right-4 w-14 h-14 rounded-full flex items-center justify-center shadow-md"
-                  style={{ background: TEAL }}>
-                  <Icon name="Award" size={22} style={{ color: "#fff" }} />
-                </div>
-              </div>
+          <div className="max-w-lg">
+            <p className="text-xs tracking-[0.3em] uppercase mb-5" style={{ color: TEAL, fontFamily: "'Oswald', sans-serif" }}>
+              Фитнес-центр в Брянске
+            </p>
+            <h1 className="font-bold leading-none mb-6 text-foreground"
+              style={{ fontSize: "clamp(2.8rem, 7vw, 5.5rem)", lineHeight: 1.0, fontFamily: "'Oswald', sans-serif" }}>
+              СДЕЛАЙ <br />
+              <span style={{ color: TEAL }}>ПЕРВЫЙ</span>
+              <br /> ШАГ
+            </h1>
+            <p className="text-lg mb-10 text-foreground/60" style={{ lineHeight: 1.7 }}>
+              Профессиональные тренеры, современное оборудование и атмосфера, которая заряжает с первого дня.
+            </p>
+            <div className="flex gap-4 flex-wrap">
+              <button onClick={() => scrollTo("plans")}
+                className="text-sm tracking-widest uppercase px-8 py-4 rounded-lg font-semibold transition-all hover:scale-105 text-white"
+                style={{ background: TEAL, fontFamily: "'Oswald', sans-serif" }}>
+                Выбрать абонемент
+              </button>
+              <button onClick={() => scrollTo("trainers")}
+                className="text-sm tracking-widest uppercase px-8 py-4 rounded-lg font-semibold transition-all hover:scale-105 text-foreground"
+                style={{ border: "1.5px solid #d1d5db", background: "rgba(255,255,255,0.6)", fontFamily: "'Oswald', sans-serif" }}>
+                Наши тренеры
+              </button>
             </div>
           </div>
         </div>
@@ -357,9 +340,9 @@ export default function Index() {
           style={{ background: "rgba(255,255,255,0.92)", backdropFilter: "blur(10px)", borderTop: "1px solid #e5e7eb" }}>
           <div className="max-w-7xl mx-auto px-6 py-5 grid grid-cols-3">
             {[
-              { val: "500+", label: "Клиентов" },
-              { val: "12", label: "Тренеров" },
-              { val: "7 лет", label: "На рынке" },
+              { val: "—", label: "Клиентов" },
+              { val: "—", label: "Тренеров" },
+              { val: "Новый", label: "Фитнес-центр" },
             ].map((s, i) => (
               <div key={i} className="text-center" style={{ borderLeft: i > 0 ? "1px solid #e5e7eb" : "none" }}>
                 <div className="text-2xl font-semibold" style={{ color: TEAL, fontFamily: "'Oswald', sans-serif" }}>{s.val}</div>
@@ -385,7 +368,7 @@ export default function Index() {
               IST FIT — это не просто фитнес-центр. Это место, где каждый клиент получает персональный подход, профессиональное сопровождение и реальный результат.
             </p>
             <p className="text-foreground/70 leading-relaxed mb-10">
-              Мы работаем с 2017 года и за это время помогли сотням людей изменить своё тело и образ жизни. Наши тренеры — практики, которые сами живут спортом.
+              Мы открылись совсем недавно, но уже помогаем людям двигаться к своим целям. Наши тренеры — практики, которые сами живут спортом и передают этот заряд каждому клиенту.
             </p>
             <div className="grid grid-cols-2 gap-6">
               {[
