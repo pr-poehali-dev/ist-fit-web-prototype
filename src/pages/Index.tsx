@@ -68,10 +68,28 @@ const plans = [
   },
 ];
 
-const galleryImages = [
-  { src: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/bucket/f9c10069-59b0-46a2-915c-261d0506f15d.jpg", label: "Тренажёрный зал" },
-  { src: MY_TRAINER_IMG, label: "Персональные тренировки" },
-  { src: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/bucket/b40308ea-a013-411e-9dc0-16584902eaec.jpg", label: "Кардио-зона" },
+const gymRooms = [
+  {
+    id: 1,
+    label: "Тренажёрный зал",
+    src: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/bucket/f9c10069-59b0-46a2-915c-261d0506f15d.jpg",
+    desc: "Просторный зал с профессиональным оборудованием для силовых тренировок любого уровня. Свободные веса, силовые рамы, тренажёры для всех групп мышц.",
+    features: ["Силовые рамы и стойки", "Свободные веса до 50 кг", "Профессиональные тренажёры", "Зеркала по всему периметру", "Резиновое покрытие пола"],
+  },
+  {
+    id: 2,
+    label: "Персональные тренировки",
+    src: MY_TRAINER_IMG,
+    desc: "Отдельная зона для занятий с персональным тренером. Индивидуальный подход, персональная программа и максимальное внимание к технике выполнения упражнений.",
+    features: ["Персональный тренер", "Индивидуальная программа", "Контроль техники", "Видеоанализ движений", "Гибкое расписание"],
+  },
+  {
+    id: 3,
+    label: "Кардио-зона",
+    src: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/bucket/fcceda2b-01c6-44ca-829f-f2504141df8b.jpg",
+    desc: "Современная кардио-зона с широким выбором беговых дорожек, велотренажёров, гребных тренажёров и эллипсов. Идеально для разминки, похудения и развития выносливости.",
+    features: ["Беговые дорожки Pro Fitness", "Гребные тренажёры", "Велотренажёры", "Эллипсоиды", "Встроенные мониторы пульса"],
+  },
 ];
 
 function useInView(threshold = 0.15) {
@@ -120,12 +138,13 @@ function StarRating({ stars }: { stars: number }) {
 }
 
 type Trainer = (typeof trainers)[0];
+type GymRoom = (typeof gymRooms)[0];
 
 export default function Index() {
   const [activeSection, setActiveSection] = useState("home");
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedTrainer, setSelectedTrainer] = useState<Trainer | null>(null);
-  const [lightboxImg, setLightboxImg] = useState<string | null>(null);
+  const [selectedGym, setSelectedGym] = useState<GymRoom | null>(null);
   const [formData, setFormData] = useState({ name: "", phone: "", message: "" });
   const [formSent, setFormSent] = useState(false);
 
@@ -215,6 +234,56 @@ export default function Index() {
                   <p className="text-muted-foreground text-sm font-medium">{r.author}</p>
                 </div>
               ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  /* ── Gym detail page ── */
+  if (selectedGym) {
+    return (
+      <div className="min-h-screen bg-background text-foreground">
+        <div className="max-w-4xl mx-auto px-6 py-12">
+          <button
+            onClick={() => setSelectedGym(null)}
+            className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-10 group"
+          >
+            <Icon name="ArrowLeft" size={18} className="group-hover:-translate-x-1 transition-transform" />
+            <span>Назад к галерее</span>
+          </button>
+          <div className="grid md:grid-cols-2 gap-12 mb-16">
+            <div className="rounded-2xl overflow-hidden shadow-md" style={{ aspectRatio: "4/3", border: "1px solid #e5e7eb" }}>
+              <img src={selectedGym.src} alt={selectedGym.label} className="w-full h-full object-cover" />
+            </div>
+            <div className="flex flex-col justify-center">
+              <p className="text-sm tracking-widest uppercase mb-3" style={{ color: TEAL, fontFamily: "'Oswald', sans-serif" }}>
+                IST FIT
+              </p>
+              <h1 className="text-4xl font-semibold mb-6 text-foreground" style={{ fontFamily: "'Oswald', sans-serif" }}>
+                {selectedGym.label.toUpperCase()}
+              </h1>
+              <div className="w-12 mb-6" style={{ height: "2px", background: TEAL }} />
+              <p className="text-foreground/70 leading-relaxed mb-8">{selectedGym.desc}</p>
+              <div className="flex flex-col gap-3 mb-8">
+                {selectedGym.features.map((f) => (
+                  <div key={f} className="flex items-center gap-3">
+                    <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0"
+                      style={{ background: `rgba(14,165,160,0.1)` }}>
+                      <Icon name="Check" size={13} style={{ color: TEAL }} />
+                    </div>
+                    <span className="text-sm text-foreground/80">{f}</span>
+                  </div>
+                ))}
+              </div>
+              <button
+                className="text-sm tracking-wider uppercase px-6 py-3 rounded-lg font-semibold w-fit transition-all hover:scale-105 text-white"
+                style={{ background: TEAL, fontFamily: "'Oswald', sans-serif" }}
+                onClick={() => { setSelectedGym(null); setTimeout(() => scrollTo("contacts"), 100); }}
+              >
+                Записаться на тренировку
+              </button>
             </div>
           </div>
         </div>
@@ -446,38 +515,29 @@ export default function Index() {
         </SectionReveal>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {galleryImages.map((img, i) => (
-            <SectionReveal key={i} delay={i * 70}>
+          {gymRooms.map((room, i) => (
+            <SectionReveal key={room.id} delay={i * 70}>
               <div
                 className="relative overflow-hidden rounded-xl cursor-pointer group shadow-sm"
                 style={{ aspectRatio: "4/3" }}
-                onClick={() => setLightboxImg(img.src)}
+                onClick={() => setSelectedGym(room)}
               >
-                <img src={img.src} alt={img.label}
+                <img src={room.src} alt={room.label}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                 <div
-                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4"
-                  style={{ background: "linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 60%)" }}>
-                  <span className="text-sm text-white">{img.label}</span>
+                  className="absolute inset-0 transition-opacity duration-300 flex flex-col items-start justify-end p-5"
+                  style={{ background: "linear-gradient(to top, rgba(0,0,0,0.65) 0%, transparent 60%)" }}>
+                  <span className="text-base font-semibold text-white mb-2">{room.label}</span>
+                  <div className="flex items-center gap-1 text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    style={{ color: "rgba(14,165,160,0.9)" }}>
+                    <span>Подробнее</span>
+                    <Icon name="ArrowRight" size={12} />
+                  </div>
                 </div>
               </div>
             </SectionReveal>
           ))}
         </div>
-
-        {lightboxImg && (
-          <div
-            className="fixed inset-0 z-50 flex items-center justify-center p-6"
-            style={{ background: "rgba(0,0,0,0.85)" }}
-            onClick={() => setLightboxImg(null)}
-          >
-            <button className="absolute top-6 right-6 text-white/70 hover:text-white transition-colors" onClick={() => setLightboxImg(null)}>
-              <Icon name="X" size={28} />
-            </button>
-            <img src={lightboxImg} alt="" className="max-w-full max-h-full rounded-xl object-contain"
-              onClick={(e) => e.stopPropagation()} style={{ maxHeight: "85vh" }} />
-          </div>
-        )}
       </section>
 
       {/* PLANS */}
