@@ -5,6 +5,9 @@ const HERO_IMG = "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a9
 const TRAINER1_IMG = "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/b265f983-b890-4a62-a6f5-8659494513c3.jpg";
 const TRAINER2_IMG = "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/bc180fed-e45c-4061-be08-e3b2de5a27d7.jpg";
 const GALLERY_IMG = "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/67b70010-bf81-4d87-9637-37c9579bc9fd.jpg";
+const MY_TRAINER_IMG = "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/bucket/b98a2540-c29e-49a7-b943-f2d18682ad14.jpg";
+
+const TEAL = "#0EA5A0";
 
 const trainers = [
   {
@@ -14,7 +17,7 @@ const trainers = [
     experience: "8 лет опыта",
     specialization: ["Пауэрлифтинг", "Функциональный тренинг", "Реабилитация"],
     bio: "Мастер спорта по пауэрлифтингу. Специализируется на работе с новичками и спортсменами среднего уровня. Разрабатывает индивидуальные программы под цели каждого клиента.",
-    img: TRAINER1_IMG,
+    img: MY_TRAINER_IMG,
     reviews: [
       { author: "Михаил К.", text: "За 4 месяца увеличил жим лёжа со 80 до 120 кг. Александр знает своё дело!", stars: 5 },
       { author: "Дарья П.", text: "Помог восстановиться после травмы спины. Очень внимательный и профессиональный.", stars: 5 },
@@ -42,7 +45,7 @@ const trainers = [
     experience: "5 лет опыта",
     specialization: ["HIIT", "Кардио", "Похудение"],
     bio: "Бывший профессиональный легкоатлет. Специализируется на высокоинтенсивных тренировках для сжигания жира и улучшения выносливости. Результаты клиентов говорят сами за себя.",
-    img: HERO_IMG,
+    img: TRAINER1_IMG,
     reviews: [
       { author: "Роман С.", text: "Минус 12 кг за 3 месяца! Тренировки тяжёлые, но эффект реальный.", stars: 5 },
       { author: "Валерия Ю.", text: "Денис умеет мотивировать даже когда совсем нет сил. Топовый тренер.", stars: 5 },
@@ -80,7 +83,7 @@ const plans = [
 
 const galleryImages = [
   { src: HERO_IMG, label: "Тренажёрный зал" },
-  { src: TRAINER1_IMG, label: "Персональные тренировки" },
+  { src: MY_TRAINER_IMG, label: "Персональные тренировки" },
   { src: GALLERY_IMG, label: "Групповые занятия" },
   { src: TRAINER2_IMG, label: "Йога и пилатес" },
   { src: GALLERY_IMG, label: "Кардио-зона" },
@@ -95,10 +98,7 @@ function useInView(threshold = 0.15) {
     if (!el) return;
     const obs = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setInView(true);
-          obs.disconnect();
-        }
+        if (entry.isIntersecting) { setInView(true); obs.disconnect(); }
       },
       { threshold }
     );
@@ -108,15 +108,7 @@ function useInView(threshold = 0.15) {
   return { ref, inView };
 }
 
-function SectionReveal({
-  children,
-  className = "",
-  delay = 0,
-}: {
-  children: React.ReactNode;
-  className?: string;
-  delay?: number;
-}) {
+function SectionReveal({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
   const { ref, inView } = useInView();
   return (
     <div
@@ -124,8 +116,8 @@ function SectionReveal({
       className={className}
       style={{
         opacity: inView ? 1 : 0,
-        transform: inView ? "translateY(0)" : "translateY(32px)",
-        transition: `opacity 0.7s ease ${delay}ms, transform 0.7s ease ${delay}ms`,
+        transform: inView ? "translateY(0)" : "translateY(28px)",
+        transition: `opacity 0.65s ease ${delay}ms, transform 0.65s ease ${delay}ms`,
       }}
     >
       {children}
@@ -137,9 +129,7 @@ function StarRating({ stars }: { stars: number }) {
   return (
     <div className="flex gap-0.5">
       {Array.from({ length: 5 }).map((_, i) => (
-        <span key={i} style={{ color: i < stars ? "#00E676" : "#333" }}>
-          ★
-        </span>
+        <span key={i} style={{ color: i < stars ? TEAL : "#d1d5db" }}>★</span>
       ))}
     </div>
   );
@@ -165,14 +155,12 @@ export default function Index() {
   ];
 
   useEffect(() => {
+    const ids = navLinks.map((l) => l.id);
     const handleScroll = () => {
       const scrollY = window.scrollY + 100;
-      for (let i = navLinks.length - 1; i >= 0; i--) {
-        const el = document.getElementById(navLinks[i].id);
-        if (el && el.offsetTop <= scrollY) {
-          setActiveSection(navLinks[i].id);
-          break;
-        }
+      for (let i = ids.length - 1; i >= 0; i--) {
+        const el = document.getElementById(ids[i]);
+        if (el && el.offsetTop <= scrollY) { setActiveSection(ids[i]); break; }
       }
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -189,114 +177,58 @@ export default function Index() {
     setFormSent(true);
   };
 
+  /* ── Trainer detail page ── */
   if (selectedTrainer) {
     return (
-      <div
-        className="min-h-screen bg-background text-foreground"
-        style={{ fontFamily: "'Golos Text', sans-serif" }}
-      >
+      <div className="min-h-screen bg-background text-foreground">
         <div className="max-w-4xl mx-auto px-6 py-12">
           <button
             onClick={() => setSelectedTrainer(null)}
             className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-10 group"
           >
-            <Icon
-              name="ArrowLeft"
-              size={18}
-              className="group-hover:-translate-x-1 transition-transform"
-            />
-            <span style={{ fontFamily: "'Golos Text', sans-serif" }}>Назад к тренерам</span>
+            <Icon name="ArrowLeft" size={18} className="group-hover:-translate-x-1 transition-transform" />
+            <span>Назад к тренерам</span>
           </button>
           <div className="grid md:grid-cols-2 gap-12 mb-16">
-            <div
-              className="rounded-2xl overflow-hidden"
-              style={{ aspectRatio: "3/4", border: "1px solid #1f1f1f" }}
-            >
-              <img
-                src={selectedTrainer.img}
-                alt={selectedTrainer.name}
-                className="w-full h-full object-cover"
-              />
+            <div className="rounded-2xl overflow-hidden shadow-md" style={{ aspectRatio: "3/4", border: "1px solid #e5e7eb" }}>
+              <img src={selectedTrainer.img} alt={selectedTrainer.name} className="w-full h-full object-cover" />
             </div>
             <div className="flex flex-col justify-center">
-              <p
-                className="text-sm tracking-widest uppercase mb-3"
-                style={{ color: "#00E676", fontFamily: "'Oswald', sans-serif" }}
-              >
+              <p className="text-sm tracking-widest uppercase mb-3" style={{ color: TEAL, fontFamily: "'Oswald', sans-serif" }}>
                 {selectedTrainer.experience}
               </p>
-              <h1
-                className="text-4xl font-semibold mb-2 text-white"
-                style={{ fontFamily: "'Oswald', sans-serif" }}
-              >
+              <h1 className="text-4xl font-semibold mb-2 text-foreground" style={{ fontFamily: "'Oswald', sans-serif" }}>
                 {selectedTrainer.name}
               </h1>
               <p className="text-muted-foreground mb-6">{selectedTrainer.role}</p>
-              <p
-                className="text-foreground/80 leading-relaxed mb-8"
-                style={{ fontFamily: "'Golos Text', sans-serif" }}
-              >
-                {selectedTrainer.bio}
-              </p>
+              <p className="text-foreground/80 leading-relaxed mb-8">{selectedTrainer.bio}</p>
               <div className="flex flex-wrap gap-2 mb-8">
                 {selectedTrainer.specialization.map((s) => (
-                  <span
-                    key={s}
-                    className="px-3 py-1.5 rounded-full text-sm"
-                    style={{
-                      background: "rgba(0,230,118,0.1)",
-                      color: "#00E676",
-                      border: "1px solid rgba(0,230,118,0.2)",
-                      fontFamily: "'Golos Text', sans-serif",
-                    }}
-                  >
+                  <span key={s} className="px-3 py-1.5 rounded-full text-sm"
+                    style={{ background: `rgba(14,165,160,0.1)`, color: TEAL, border: `1px solid rgba(14,165,160,0.2)` }}>
                     {s}
                   </span>
                 ))}
               </div>
               <button
-                className="text-sm tracking-wider uppercase px-6 py-3 rounded-lg font-semibold w-fit transition-all hover:scale-105"
-                style={{
-                  background: "#00E676",
-                  color: "#0a0a0a",
-                  fontFamily: "'Oswald', sans-serif",
-                }}
-                onClick={() => {
-                  setSelectedTrainer(null);
-                  setTimeout(() => scrollTo("contacts"), 100);
-                }}
+                className="text-sm tracking-wider uppercase px-6 py-3 rounded-lg font-semibold w-fit transition-all hover:scale-105 text-white"
+                style={{ background: TEAL, fontFamily: "'Oswald', sans-serif" }}
+                onClick={() => { setSelectedTrainer(null); setTimeout(() => scrollTo("contacts"), 100); }}
               >
                 Записаться на тренировку
               </button>
             </div>
           </div>
           <div>
-            <h2
-              className="text-2xl font-semibold text-white mb-8 tracking-wide"
-              style={{ fontFamily: "'Oswald', sans-serif" }}
-            >
+            <h2 className="text-2xl font-semibold text-foreground mb-8" style={{ fontFamily: "'Oswald', sans-serif" }}>
               Отзывы клиентов
             </h2>
             <div className="grid md:grid-cols-3 gap-6">
               {selectedTrainer.reviews.map((r, i) => (
-                <div
-                  key={i}
-                  className="p-6 rounded-xl"
-                  style={{ background: "#141414", border: "1px solid #1f1f1f" }}
-                >
+                <div key={i} className="p-6 rounded-xl shadow-sm" style={{ background: "#fff", border: "1px solid #e5e7eb" }}>
                   <StarRating stars={r.stars} />
-                  <p
-                    className="text-foreground/80 text-sm leading-relaxed mt-3 mb-4"
-                    style={{ fontFamily: "'Golos Text', sans-serif" }}
-                  >
-                    "{r.text}"
-                  </p>
-                  <p
-                    className="text-muted-foreground text-sm font-medium"
-                    style={{ fontFamily: "'Golos Text', sans-serif" }}
-                  >
-                    {r.author}
-                  </p>
+                  <p className="text-foreground/75 text-sm leading-relaxed mt-3 mb-4">"{r.text}"</p>
+                  <p className="text-muted-foreground text-sm font-medium">{r.author}</p>
                 </div>
               ))}
             </div>
@@ -306,88 +238,52 @@ export default function Index() {
     );
   }
 
+  /* ── Main page ── */
   return (
-    <div
-      className="min-h-screen bg-background text-foreground"
-      style={{ fontFamily: "'Golos Text', sans-serif" }}
-    >
+    <div className="min-h-screen bg-background text-foreground">
+
       {/* NAV */}
-      <nav
-        className="fixed top-0 left-0 right-0 z-50 transition-all"
-        style={{
-          background: "rgba(18,18,18,0.92)",
-          backdropFilter: "blur(20px)",
-          borderBottom: "1px solid #1a1a1a",
-        }}
-      >
+      <nav className="fixed top-0 left-0 right-0 z-50"
+        style={{ background: "rgba(255,255,255,0.92)", backdropFilter: "blur(20px)", borderBottom: "1px solid #e5e7eb" }}>
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div
-            className="text-xl font-semibold tracking-widest"
-            style={{ color: "#00E676", fontFamily: "'Oswald', sans-serif" }}
-          >
-            IST<span className="text-white"> FIT</span>
+          <div className="text-xl font-semibold tracking-widest" style={{ color: TEAL, fontFamily: "'Oswald', sans-serif" }}>
+            IST<span className="text-foreground"> FIT</span>
           </div>
 
           <div className="hidden md:flex items-center gap-8">
             {navLinks.map((link) => (
-              <button
-                key={link.id}
-                onClick={() => scrollTo(link.id)}
+              <button key={link.id} onClick={() => scrollTo(link.id)}
                 className="nav-link text-sm transition-colors"
-                style={{
-                  color: activeSection === link.id ? "#00E676" : "#aaa",
-                  fontFamily: "'Golos Text', sans-serif",
-                }}
-              >
+                style={{ color: activeSection === link.id ? TEAL : "#6b7280", fontFamily: "'Golos Text', sans-serif" }}>
                 {link.label}
               </button>
             ))}
           </div>
 
           <button
-            className="hidden md:block text-xs tracking-widest uppercase px-5 py-2.5 rounded-lg font-semibold transition-all hover:scale-105"
-            style={{
-              background: "#00E676",
-              color: "#0a0a0a",
-              fontFamily: "'Oswald', sans-serif",
-            }}
-            onClick={() => scrollTo("contacts")}
-          >
+            className="hidden md:block text-xs tracking-widest uppercase px-5 py-2.5 rounded-lg font-semibold transition-all hover:scale-105 text-white"
+            style={{ background: TEAL, fontFamily: "'Oswald', sans-serif" }}
+            onClick={() => scrollTo("contacts")}>
             Записаться
           </button>
 
-          <button className="md:hidden text-white" onClick={() => setMenuOpen(!menuOpen)}>
+          <button className="md:hidden text-foreground" onClick={() => setMenuOpen(!menuOpen)}>
             <Icon name={menuOpen ? "X" : "Menu"} size={24} />
           </button>
         </div>
 
         {menuOpen && (
-          <div
-            className="md:hidden px-6 pb-6 flex flex-col gap-4"
-            style={{ borderTop: "1px solid #1a1a1a" }}
-          >
+          <div className="md:hidden px-6 pb-6 flex flex-col gap-4 bg-white" style={{ borderTop: "1px solid #e5e7eb" }}>
             {navLinks.map((link) => (
-              <button
-                key={link.id}
-                onClick={() => scrollTo(link.id)}
+              <button key={link.id} onClick={() => scrollTo(link.id)}
                 className="text-left text-base py-1"
-                style={{
-                  color: activeSection === link.id ? "#00E676" : "#ccc",
-                  fontFamily: "'Golos Text', sans-serif",
-                }}
-              >
+                style={{ color: activeSection === link.id ? TEAL : "#374151" }}>
                 {link.label}
               </button>
             ))}
-            <button
-              className="text-xs tracking-widest uppercase px-5 py-3 rounded-lg font-semibold mt-2"
-              style={{
-                background: "#00E676",
-                color: "#0a0a0a",
-                fontFamily: "'Oswald', sans-serif",
-              }}
-              onClick={() => scrollTo("contacts")}
-            >
+            <button className="text-xs tracking-widest uppercase px-5 py-3 rounded-lg font-semibold mt-2 text-white"
+              style={{ background: TEAL, fontFamily: "'Oswald', sans-serif" }}
+              onClick={() => scrollTo("contacts")}>
               Записаться
             </button>
           </div>
@@ -398,106 +294,76 @@ export default function Index() {
       <section id="home" className="relative min-h-screen flex items-center overflow-hidden">
         <div className="absolute inset-0">
           <img src={HERO_IMG} alt="IST FIT" className="w-full h-full object-cover" />
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                "linear-gradient(to right, rgba(12,12,12,0.95) 40%, rgba(12,12,12,0.5) 100%)",
-            }}
-          />
+          <div className="absolute inset-0"
+            style={{ background: "linear-gradient(to right, rgba(255,255,255,0.96) 42%, rgba(255,255,255,0.55) 70%, rgba(255,255,255,0.1) 100%)" }} />
         </div>
-        <div className="relative z-10 max-w-7xl mx-auto px-6 pt-24 pb-28">
-          <div className="max-w-xl">
-            <p
-              className="text-xs tracking-[0.3em] uppercase mb-6"
-              style={{ color: "#00E676", fontFamily: "'Oswald', sans-serif" }}
-            >
-              Фитнес-центр в Москве
-            </p>
-            <h1
-              className="font-bold leading-none mb-6 text-white"
-              style={{
-                fontSize: "clamp(3rem, 8vw, 6rem)",
-                lineHeight: 1.0,
-                fontFamily: "'Oswald', sans-serif",
-              }}
-            >
-              СДЕЛАЙ <br />
-              <span style={{ color: "#00E676" }}>ПЕРВЫЙ</span>
-              <br /> ШАГ
-            </h1>
-            <p
-              className="text-lg mb-10"
-              style={{
-                color: "rgba(255,255,255,0.65)",
-                lineHeight: 1.7,
-                fontFamily: "'Golos Text', sans-serif",
-              }}
-            >
-              Профессиональные тренеры, современное оборудование и атмосфера, которая заряжает с
-              первого дня.
-            </p>
-            <div className="flex gap-4 flex-wrap">
-              <button
-                onClick={() => scrollTo("plans")}
-                className="text-sm tracking-widest uppercase px-8 py-4 rounded-lg font-semibold transition-all hover:scale-105 active:scale-95"
-                style={{
-                  background: "#00E676",
-                  color: "#0a0a0a",
-                  fontFamily: "'Oswald', sans-serif",
-                }}
-              >
-                Выбрать абонемент
-              </button>
-              <button
-                onClick={() => scrollTo("trainers")}
-                className="text-sm tracking-widest uppercase px-8 py-4 rounded-lg font-semibold transition-all hover:scale-105"
-                style={{
-                  border: "1px solid rgba(255,255,255,0.2)",
-                  color: "#fff",
-                  background: "transparent",
-                  fontFamily: "'Oswald', sans-serif",
-                }}
-              >
-                Наши тренеры
-              </button>
+
+        <div className="relative z-10 max-w-7xl mx-auto px-6 pt-24 pb-32 w-full">
+          <div className="grid md:grid-cols-2 gap-10 items-center">
+            {/* Left — text */}
+            <div>
+              <p className="text-xs tracking-[0.3em] uppercase mb-5" style={{ color: TEAL, fontFamily: "'Oswald', sans-serif" }}>
+                Фитнес-центр в Брянске
+              </p>
+              <h1 className="font-bold leading-none mb-6 text-foreground"
+                style={{ fontSize: "clamp(2.8rem, 7vw, 5.5rem)", lineHeight: 1.0, fontFamily: "'Oswald', sans-serif" }}>
+                СДЕЛАЙ <br />
+                <span style={{ color: TEAL }}>ПЕРВЫЙ</span>
+                <br /> ШАГ
+              </h1>
+              <p className="text-lg mb-10 text-foreground/65" style={{ lineHeight: 1.7 }}>
+                Профессиональные тренеры, современное оборудование и атмосфера, которая заряжает с первого дня.
+              </p>
+              <div className="flex gap-4 flex-wrap">
+                <button onClick={() => scrollTo("plans")}
+                  className="text-sm tracking-widest uppercase px-8 py-4 rounded-lg font-semibold transition-all hover:scale-105 text-white"
+                  style={{ background: TEAL, fontFamily: "'Oswald', sans-serif" }}>
+                  Выбрать абонемент
+                </button>
+                <button onClick={() => scrollTo("trainers")}
+                  className="text-sm tracking-widest uppercase px-8 py-4 rounded-lg font-semibold transition-all hover:scale-105 text-foreground"
+                  style={{ border: "1.5px solid #d1d5db", background: "transparent", fontFamily: "'Oswald', sans-serif" }}>
+                  Наши тренеры
+                </button>
+              </div>
+            </div>
+
+            {/* Right — trainer photo */}
+            <div className="hidden md:flex justify-end">
+              <div className="relative">
+                <div className="rounded-2xl overflow-hidden shadow-xl"
+                  style={{ width: 340, height: 440, border: `3px solid rgba(14,165,160,0.25)` }}>
+                  <img src={MY_TRAINER_IMG} alt="Тренер IST FIT" className="w-full h-full object-cover" />
+                </div>
+                <div className="absolute -bottom-5 -left-5 rounded-xl px-5 py-4 shadow-lg"
+                  style={{ background: "#fff", border: `1px solid rgba(14,165,160,0.2)` }}>
+                  <div className="text-xs text-muted-foreground mb-0.5">Тренер центра</div>
+                  <div className="font-semibold text-foreground text-sm" style={{ fontFamily: "'Oswald', sans-serif" }}>
+                    Александр Морозов
+                  </div>
+                  <div className="text-xs mt-0.5" style={{ color: TEAL }}>8 лет опыта</div>
+                </div>
+                <div className="absolute -top-4 -right-4 w-14 h-14 rounded-full flex items-center justify-center shadow-md"
+                  style={{ background: TEAL }}>
+                  <Icon name="Award" size={22} style={{ color: "#fff" }} />
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        <div
-          className="absolute bottom-0 left-0 right-0 z-10"
-          style={{
-            background: "rgba(10,10,10,0.85)",
-            backdropFilter: "blur(10px)",
-            borderTop: "1px solid #1f1f1f",
-          }}
-        >
+        {/* Stats bar */}
+        <div className="absolute bottom-0 left-0 right-0 z-10"
+          style={{ background: "rgba(255,255,255,0.92)", backdropFilter: "blur(10px)", borderTop: "1px solid #e5e7eb" }}>
           <div className="max-w-7xl mx-auto px-6 py-5 grid grid-cols-3">
             {[
               { val: "500+", label: "Клиентов" },
               { val: "12", label: "Тренеров" },
               { val: "7 лет", label: "На рынке" },
             ].map((s, i) => (
-              <div
-                key={i}
-                className="text-center"
-                style={{
-                  borderLeft: i > 0 ? "1px solid #1f1f1f" : "none",
-                }}
-              >
-                <div
-                  className="text-2xl font-semibold"
-                  style={{ color: "#00E676", fontFamily: "'Oswald', sans-serif" }}
-                >
-                  {s.val}
-                </div>
-                <div
-                  className="text-xs text-muted-foreground mt-0.5"
-                  style={{ fontFamily: "'Golos Text', sans-serif" }}
-                >
-                  {s.label}
-                </div>
+              <div key={i} className="text-center" style={{ borderLeft: i > 0 ? "1px solid #e5e7eb" : "none" }}>
+                <div className="text-2xl font-semibold" style={{ color: TEAL, fontFamily: "'Oswald', sans-serif" }}>{s.val}</div>
+                <div className="text-xs text-muted-foreground mt-0.5">{s.label}</div>
               </div>
             ))}
           </div>
@@ -508,33 +374,18 @@ export default function Index() {
       <section id="about" className="py-28 max-w-7xl mx-auto px-6">
         <div className="grid md:grid-cols-2 gap-20 items-center">
           <SectionReveal>
-            <p
-              className="text-xs tracking-[0.3em] uppercase mb-4"
-              style={{ color: "#00E676", fontFamily: "'Oswald', sans-serif" }}
-            >
+            <p className="text-xs tracking-[0.3em] uppercase mb-4" style={{ color: TEAL, fontFamily: "'Oswald', sans-serif" }}>
               О нас
             </p>
-            <h2
-              className="text-5xl font-semibold text-white mb-6 leading-tight"
-              style={{ fontFamily: "'Oswald', sans-serif" }}
-            >
-              МЫ СТРОИМ <br />
-              РЕЗУЛЬТАТ
+            <h2 className="text-5xl font-semibold text-foreground mb-6 leading-tight" style={{ fontFamily: "'Oswald', sans-serif" }}>
+              МЫ СТРОИМ <br />РЕЗУЛЬТАТ
             </h2>
-            <div className="w-12 mb-8" style={{ height: "2px", background: "#00E676" }} />
-            <p
-              className="text-foreground/70 leading-relaxed mb-6"
-              style={{ fontFamily: "'Golos Text', sans-serif" }}
-            >
-              IST FIT — это не просто фитнес-центр. Это место, где каждый клиент получает
-              персональный подход, профессиональное сопровождение и реальный результат.
+            <div className="w-12 mb-8" style={{ height: "2px", background: TEAL }} />
+            <p className="text-foreground/70 leading-relaxed mb-6">
+              IST FIT — это не просто фитнес-центр. Это место, где каждый клиент получает персональный подход, профессиональное сопровождение и реальный результат.
             </p>
-            <p
-              className="text-foreground/70 leading-relaxed mb-10"
-              style={{ fontFamily: "'Golos Text', sans-serif" }}
-            >
-              Мы работаем с 2017 года и за это время помогли сотням людей изменить своё тело и образ
-              жизни. Наши тренеры — практики, которые сами живут спортом.
+            <p className="text-foreground/70 leading-relaxed mb-10">
+              Мы работаем с 2017 года и за это время помогли сотням людей изменить своё тело и образ жизни. Наши тренеры — практики, которые сами живут спортом.
             </p>
             <div className="grid grid-cols-2 gap-6">
               {[
@@ -544,18 +395,11 @@ export default function Index() {
                 { icon: "Clock", text: "Работаем 7 дней в неделю" },
               ].map((item) => (
                 <div key={item.text} className="flex items-start gap-3">
-                  <div
-                    className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"
-                    style={{ background: "rgba(0,230,118,0.1)" }}
-                  >
-                    <Icon name={item.icon} fallback="Star" size={16} style={{ color: "#00E676" }} />
+                  <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5"
+                    style={{ background: `rgba(14,165,160,0.1)` }}>
+                    <Icon name={item.icon} fallback="Star" size={16} style={{ color: TEAL }} />
                   </div>
-                  <span
-                    className="text-sm text-foreground/80 leading-snug pt-1"
-                    style={{ fontFamily: "'Golos Text', sans-serif" }}
-                  >
-                    {item.text}
-                  </span>
+                  <span className="text-sm text-foreground/80 leading-snug pt-1">{item.text}</span>
                 </div>
               ))}
             </div>
@@ -563,32 +407,13 @@ export default function Index() {
 
           <SectionReveal delay={150}>
             <div className="relative">
-              <div
-                className="rounded-2xl overflow-hidden"
-                style={{ aspectRatio: "4/5", border: "1px solid #1f1f1f" }}
-              >
+              <div className="rounded-2xl overflow-hidden shadow-md" style={{ aspectRatio: "4/5", border: "1px solid #e5e7eb" }}>
                 <img src={GALLERY_IMG} alt="Зал" className="w-full h-full object-cover" />
               </div>
-              <div
-                className="absolute -bottom-6 -left-6 rounded-xl p-6"
-                style={{
-                  background: "#141414",
-                  border: "1px solid #1f1f1f",
-                  minWidth: 180,
-                }}
-              >
-                <div
-                  className="text-3xl font-semibold"
-                  style={{ color: "#00E676", fontFamily: "'Oswald', sans-serif" }}
-                >
-                  06:00
-                </div>
-                <div
-                  className="text-xs text-muted-foreground mt-1"
-                  style={{ fontFamily: "'Golos Text', sans-serif" }}
-                >
-                  Открываемся каждый день
-                </div>
+              <div className="absolute -bottom-6 -left-6 rounded-xl p-6 shadow-lg"
+                style={{ background: "#fff", border: "1px solid #e5e7eb", minWidth: 180 }}>
+                <div className="text-3xl font-semibold" style={{ color: TEAL, fontFamily: "'Oswald', sans-serif" }}>06:00</div>
+                <div className="text-xs text-muted-foreground mt-1">Открываемся каждый день</div>
               </div>
             </div>
           </SectionReveal>
@@ -596,30 +421,19 @@ export default function Index() {
       </section>
 
       {/* TRAINERS */}
-      <section id="trainers" className="py-28" style={{ background: "#0d0d0d" }}>
+      <section id="trainers" className="py-28" style={{ background: "#f8fafa" }}>
         <div className="max-w-7xl mx-auto px-6">
           <SectionReveal>
             <div className="flex items-end justify-between mb-16">
               <div>
-                <p
-                  className="text-xs tracking-[0.3em] uppercase mb-4"
-                  style={{ color: "#00E676", fontFamily: "'Oswald', sans-serif" }}
-                >
+                <p className="text-xs tracking-[0.3em] uppercase mb-4" style={{ color: TEAL, fontFamily: "'Oswald', sans-serif" }}>
                   Команда
                 </p>
-                <h2
-                  className="text-5xl font-semibold text-white leading-tight"
-                  style={{ fontFamily: "'Oswald', sans-serif" }}
-                >
-                  НАШИ
-                  <br />
-                  ТРЕНЕРЫ
+                <h2 className="text-5xl font-semibold text-foreground leading-tight" style={{ fontFamily: "'Oswald', sans-serif" }}>
+                  НАШИ<br />ТРЕНЕРЫ
                 </h2>
               </div>
-              <div
-                className="hidden md:block text-sm text-muted-foreground max-w-xs text-right"
-                style={{ fontFamily: "'Golos Text', sans-serif" }}
-              >
+              <div className="hidden md:block text-sm text-muted-foreground max-w-xs text-right">
                 Профессионалы своего дела, которые помогут достичь твоих целей
               </div>
             </div>
@@ -629,34 +443,20 @@ export default function Index() {
             {trainers.map((trainer, i) => (
               <SectionReveal key={trainer.id} delay={i * 100}>
                 <div
-                  className="rounded-2xl overflow-hidden group cursor-pointer card-hover"
-                  style={{ background: "#141414", border: "1px solid #1f1f1f" }}
+                  className="rounded-2xl overflow-hidden group cursor-pointer card-hover bg-white"
+                  style={{ border: "1px solid #e5e7eb", boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}
                   onClick={() => setSelectedTrainer(trainer)}
                 >
                   <div className="relative overflow-hidden" style={{ aspectRatio: "3/4" }}>
-                    <img
-                      src={trainer.img}
-                      alt={trainer.name}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
+                    <img src={trainer.img} alt={trainer.name}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                     <div
                       className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6"
-                      style={{
-                        background:
-                          "linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 60%)",
-                      }}
-                    >
+                      style={{ background: "linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 60%)" }}>
                       <div className="flex gap-2 flex-wrap">
                         {trainer.specialization.map((s) => (
-                          <span
-                            key={s}
-                            className="px-2 py-1 rounded text-xs"
-                            style={{
-                              background: "rgba(0,230,118,0.2)",
-                              color: "#00E676",
-                              fontFamily: "'Golos Text', sans-serif",
-                            }}
-                          >
+                          <span key={s} className="px-2 py-1 rounded text-xs text-white"
+                            style={{ background: "rgba(14,165,160,0.75)" }}>
                             {s}
                           </span>
                         ))}
@@ -664,28 +464,14 @@ export default function Index() {
                     </div>
                   </div>
                   <div className="p-6">
-                    <p
-                      className="text-xs tracking-widest uppercase mb-2"
-                      style={{ color: "#00E676", fontFamily: "'Oswald', sans-serif" }}
-                    >
+                    <p className="text-xs tracking-widest uppercase mb-2" style={{ color: TEAL, fontFamily: "'Oswald', sans-serif" }}>
                       {trainer.experience}
                     </p>
-                    <h3
-                      className="text-xl font-semibold text-white mb-1"
-                      style={{ fontFamily: "'Oswald', sans-serif" }}
-                    >
+                    <h3 className="text-xl font-semibold text-foreground mb-1" style={{ fontFamily: "'Oswald', sans-serif" }}>
                       {trainer.name}
                     </h3>
-                    <p
-                      className="text-sm text-muted-foreground mb-4"
-                      style={{ fontFamily: "'Golos Text', sans-serif" }}
-                    >
-                      {trainer.role}
-                    </p>
-                    <div
-                      className="flex items-center gap-1 text-sm"
-                      style={{ color: "#00E676", fontFamily: "'Golos Text', sans-serif" }}
-                    >
+                    <p className="text-sm text-muted-foreground mb-4">{trainer.role}</p>
+                    <div className="flex items-center gap-1 text-sm" style={{ color: TEAL }}>
                       <span>Подробнее</span>
                       <Icon name="ArrowRight" size={14} />
                     </div>
@@ -700,47 +486,28 @@ export default function Index() {
       {/* GALLERY */}
       <section id="gallery" className="py-28 max-w-7xl mx-auto px-6">
         <SectionReveal>
-          <p
-            className="text-xs tracking-[0.3em] uppercase mb-4"
-            style={{ color: "#00E676", fontFamily: "'Oswald', sans-serif" }}
-          >
+          <p className="text-xs tracking-[0.3em] uppercase mb-4" style={{ color: TEAL, fontFamily: "'Oswald', sans-serif" }}>
             Галерея
           </p>
-          <h2
-            className="text-5xl font-semibold text-white mb-16 leading-tight"
-            style={{ fontFamily: "'Oswald', sans-serif" }}
-          >
-            НАШ
-            <br />
-            ЗАЛ
+          <h2 className="text-5xl font-semibold text-foreground mb-16 leading-tight" style={{ fontFamily: "'Oswald', sans-serif" }}>
+            НАШ<br />ЗАЛ
           </h2>
         </SectionReveal>
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {galleryImages.map((img, i) => (
-            <SectionReveal key={i} delay={i * 80}>
+            <SectionReveal key={i} delay={i * 70}>
               <div
-                className="relative overflow-hidden rounded-xl cursor-pointer group"
+                className="relative overflow-hidden rounded-xl cursor-pointer group shadow-sm"
                 style={{ aspectRatio: i === 0 || i === 5 ? "4/5" : "1/1" }}
                 onClick={() => setLightboxImg(img.src)}
               >
-                <img
-                  src={img.src}
-                  alt={img.label}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                />
+                <img src={img.src} alt={img.label}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                 <div
                   className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4"
-                  style={{
-                    background: "linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 60%)",
-                  }}
-                >
-                  <span
-                    className="text-sm text-white"
-                    style={{ fontFamily: "'Golos Text', sans-serif" }}
-                  >
-                    {img.label}
-                  </span>
+                  style={{ background: "linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 60%)" }}>
+                  <span className="text-sm text-white">{img.label}</span>
                 </div>
               </div>
             </SectionReveal>
@@ -750,50 +517,30 @@ export default function Index() {
         {lightboxImg && (
           <div
             className="fixed inset-0 z-50 flex items-center justify-center p-6"
-            style={{ background: "rgba(0,0,0,0.95)" }}
+            style={{ background: "rgba(0,0,0,0.85)" }}
             onClick={() => setLightboxImg(null)}
           >
-            <button
-              className="absolute top-6 right-6 text-white/60 hover:text-white transition-colors"
-              onClick={() => setLightboxImg(null)}
-            >
+            <button className="absolute top-6 right-6 text-white/70 hover:text-white transition-colors" onClick={() => setLightboxImg(null)}>
               <Icon name="X" size={28} />
             </button>
-            <img
-              src={lightboxImg}
-              alt=""
-              className="max-w-full max-h-full rounded-xl object-contain"
-              onClick={(e) => e.stopPropagation()}
-              style={{ maxHeight: "85vh" }}
-            />
+            <img src={lightboxImg} alt="" className="max-w-full max-h-full rounded-xl object-contain"
+              onClick={(e) => e.stopPropagation()} style={{ maxHeight: "85vh" }} />
           </div>
         )}
       </section>
 
       {/* PLANS */}
-      <section id="plans" className="py-28" style={{ background: "#0d0d0d" }}>
+      <section id="plans" className="py-28" style={{ background: "#f8fafa" }}>
         <div className="max-w-7xl mx-auto px-6">
           <SectionReveal>
-            <p
-              className="text-xs tracking-[0.3em] uppercase mb-4"
-              style={{ color: "#00E676", fontFamily: "'Oswald', sans-serif" }}
-            >
+            <p className="text-xs tracking-[0.3em] uppercase mb-4" style={{ color: TEAL, fontFamily: "'Oswald', sans-serif" }}>
               Абонементы
             </p>
-            <h2
-              className="text-5xl font-semibold text-white mb-4 leading-tight"
-              style={{ fontFamily: "'Oswald', sans-serif" }}
-            >
-              ВЫБЕРИ
-              <br />
-              СВОЙ ПЛАН
+            <h2 className="text-5xl font-semibold text-foreground mb-4 leading-tight" style={{ fontFamily: "'Oswald', sans-serif" }}>
+              ВЫБЕРИ<br />СВОЙ ПЛАН
             </h2>
-            <p
-              className="text-foreground/60 mb-16 max-w-md"
-              style={{ fontFamily: "'Golos Text', sans-serif" }}
-            >
-              Прозрачные условия без скрытых платежей. Все абонементы включают доступ к базовой
-              инфраструктуре.
+            <p className="text-foreground/60 mb-16 max-w-md">
+              Прозрачные условия без скрытых платежей. Все абонементы включают доступ к базовой инфраструктуре.
             </p>
           </SectionReveal>
 
@@ -801,79 +548,40 @@ export default function Index() {
             {plans.map((plan, i) => (
               <SectionReveal key={plan.name} delay={i * 100}>
                 <div
-                  className="rounded-2xl p-8 flex flex-col h-full card-hover relative overflow-hidden"
+                  className="rounded-2xl p-8 flex flex-col h-full card-hover"
                   style={{
-                    background: plan.accent ? "rgba(0,230,118,0.06)" : "#141414",
-                    border: plan.accent
-                      ? "1px solid rgba(0,230,118,0.3)"
-                      : "1px solid #1f1f1f",
+                    background: plan.accent ? `rgba(14,165,160,0.06)` : "#fff",
+                    border: plan.accent ? `1.5px solid rgba(14,165,160,0.4)` : "1px solid #e5e7eb",
+                    boxShadow: plan.accent ? "0 8px 30px rgba(14,165,160,0.1)" : "0 2px 8px rgba(0,0,0,0.04)",
+                    position: "relative",
                   }}
                 >
                   {plan.accent && (
-                    <div
-                      className="absolute top-6 right-6 text-xs tracking-widest uppercase px-3 py-1 rounded-full font-semibold"
-                      style={{
-                        background: "#00E676",
-                        color: "#0a0a0a",
-                        fontFamily: "'Oswald', sans-serif",
-                      }}
-                    >
+                    <div className="absolute top-6 right-6 text-xs tracking-widest uppercase px-3 py-1 rounded-full font-semibold text-white"
+                      style={{ background: TEAL, fontFamily: "'Oswald', sans-serif" }}>
                       Популярный
                     </div>
                   )}
                   <div className="mb-8">
-                    <h3
-                      className="text-2xl font-semibold text-white mb-2"
-                      style={{ fontFamily: "'Oswald', sans-serif" }}
-                    >
+                    <h3 className="text-2xl font-semibold text-foreground mb-2" style={{ fontFamily: "'Oswald', sans-serif" }}>
                       {plan.name}
                     </h3>
-                    <p
-                      className="text-sm text-muted-foreground mb-6"
-                      style={{ fontFamily: "'Golos Text', sans-serif" }}
-                    >
-                      {plan.desc}
-                    </p>
+                    <p className="text-sm text-muted-foreground mb-6">{plan.desc}</p>
                     <div className="flex items-baseline gap-2">
-                      <span
-                        className="text-4xl font-bold"
-                        style={{
-                          color: plan.accent ? "#00E676" : "#fff",
-                          fontFamily: "'Oswald', sans-serif",
-                        }}
-                      >
+                      <span className="text-4xl font-bold" style={{ color: plan.accent ? TEAL : "#111827", fontFamily: "'Oswald', sans-serif" }}>
                         {plan.price}₽
                       </span>
-                      <span
-                        className="text-muted-foreground text-sm"
-                        style={{ fontFamily: "'Golos Text', sans-serif" }}
-                      >
-                        / {plan.period}
-                      </span>
+                      <span className="text-muted-foreground text-sm">/ {plan.period}</span>
                     </div>
                   </div>
                   <ul className="flex-1 space-y-3 mb-8">
                     {plan.features.map((f) => (
                       <li key={f} className="flex items-start gap-3">
-                        <div
-                          className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
-                          style={{
-                            background: plan.accent
-                              ? "rgba(0,230,118,0.2)"
-                              : "rgba(255,255,255,0.08)",
-                          }}
-                        >
-                          <Icon name="Check" size={11} style={{ color: "#00E676" }} />
+                        <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
+                          style={{ background: plan.accent ? `rgba(14,165,160,0.15)` : "#f3f4f6" }}>
+                          <Icon name="Check" size={11} style={{ color: TEAL }} />
                         </div>
-                        <span
-                          className="text-sm"
-                          style={{
-                            color: "rgba(255,255,255,0.75)",
-                            fontFamily: "'Golos Text', sans-serif",
-                          }}
-                        >
-                          {f}
-                        </span>
+                        <span className="text-sm text-foreground/75">{f}</span>
                       </li>
                     ))}
                   </ul>
@@ -881,17 +589,8 @@ export default function Index() {
                     className="w-full text-sm tracking-widest uppercase py-4 rounded-xl font-semibold transition-all hover:scale-[1.02] active:scale-[0.98]"
                     style={
                       plan.accent
-                        ? {
-                            background: "#00E676",
-                            color: "#0a0a0a",
-                            fontFamily: "'Oswald', sans-serif",
-                          }
-                        : {
-                            border: "1px solid #2a2a2a",
-                            color: "#fff",
-                            background: "transparent",
-                            fontFamily: "'Oswald', sans-serif",
-                          }
+                        ? { background: TEAL, color: "#fff", fontFamily: "'Oswald', sans-serif" }
+                        : { border: "1.5px solid #d1d5db", color: "#374151", background: "transparent", fontFamily: "'Oswald', sans-serif" }
                     }
                     onClick={() => scrollTo("contacts")}
                   >
@@ -908,50 +607,27 @@ export default function Index() {
       <section id="contacts" className="py-28 max-w-7xl mx-auto px-6">
         <div className="grid md:grid-cols-2 gap-20">
           <SectionReveal>
-            <p
-              className="text-xs tracking-[0.3em] uppercase mb-4"
-              style={{ color: "#00E676", fontFamily: "'Oswald', sans-serif" }}
-            >
+            <p className="text-xs tracking-[0.3em] uppercase mb-4" style={{ color: TEAL, fontFamily: "'Oswald', sans-serif" }}>
               Контакты
             </p>
-            <h2
-              className="text-5xl font-semibold text-white mb-8 leading-tight"
-              style={{ fontFamily: "'Oswald', sans-serif" }}
-            >
-              СВЯЖИТЕСЬ
-              <br />С НАМИ
+            <h2 className="text-5xl font-semibold text-foreground mb-8 leading-tight" style={{ fontFamily: "'Oswald', sans-serif" }}>
+              СВЯЖИТЕСЬ<br />С НАМИ
             </h2>
             <div className="space-y-6 mb-10">
               {[
-                { icon: "MapPin", label: "Адрес", value: "г. Москва, ул. Спортивная, 14" },
-                { icon: "Phone", label: "Телефон", value: "+7 (495) 123-45-67" },
+                { icon: "MapPin", label: "Адрес", value: "г. Брянск" },
+                { icon: "Phone", label: "Телефон", value: "+7 (___) ___-__-__" },
                 { icon: "Mail", label: "Email", value: "info@istfit.ru" },
-                {
-                  icon: "Clock",
-                  label: "Режим работы",
-                  value: "Пн–Пт: 06:00–23:00 / Сб–Вс: 08:00–22:00",
-                },
+                { icon: "Clock", label: "Режим работы", value: "Пн–Пт: 06:00–23:00 / Сб–Вс: 08:00–22:00" },
               ].map((item) => (
                 <div key={item.label} className="flex items-start gap-4">
-                  <div
-                    className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
-                    style={{ background: "rgba(0,230,118,0.1)" }}
-                  >
-                    <Icon name={item.icon} fallback="Star" size={16} style={{ color: "#00E676" }} />
+                  <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
+                    style={{ background: `rgba(14,165,160,0.1)` }}>
+                    <Icon name={item.icon} fallback="Star" size={16} style={{ color: TEAL }} />
                   </div>
                   <div>
-                    <div
-                      className="text-xs text-muted-foreground mb-0.5"
-                      style={{ fontFamily: "'Golos Text', sans-serif" }}
-                    >
-                      {item.label}
-                    </div>
-                    <div
-                      className="text-sm text-white"
-                      style={{ fontFamily: "'Golos Text', sans-serif" }}
-                    >
-                      {item.value}
-                    </div>
+                    <div className="text-xs text-muted-foreground mb-0.5">{item.label}</div>
+                    <div className="text-sm text-foreground">{item.value}</div>
                   </div>
                 </div>
               ))}
@@ -962,20 +638,11 @@ export default function Index() {
                 { icon: "MessageCircle", label: "Telegram" },
                 { icon: "Youtube", label: "YouTube" },
               ].map((s) => (
-                <a
-                  key={s.label}
-                  href="#"
+                <a key={s.label} href="#"
                   className="w-10 h-10 rounded-lg flex items-center justify-center transition-all hover:scale-110"
-                  style={{ border: "1px solid #2a2a2a", color: "#666" }}
-                  onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLElement).style.borderColor = "#00E676";
-                    (e.currentTarget as HTMLElement).style.color = "#00E676";
-                  }}
-                  onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLElement).style.borderColor = "#2a2a2a";
-                    (e.currentTarget as HTMLElement).style.color = "#666";
-                  }}
-                >
+                  style={{ border: "1px solid #d1d5db", color: "#9ca3af" }}
+                  onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = TEAL; (e.currentTarget as HTMLElement).style.color = TEAL; }}
+                  onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "#d1d5db"; (e.currentTarget as HTMLElement).style.color = "#9ca3af"; }}>
                   <Icon name={s.icon} fallback="Star" size={16} />
                 </a>
               ))}
@@ -984,123 +651,58 @@ export default function Index() {
 
           <SectionReveal delay={150}>
             {formSent ? (
-              <div
-                className="rounded-2xl flex flex-col items-center justify-center p-12 text-center"
-                style={{
-                  background: "#141414",
-                  border: "1px solid rgba(0,230,118,0.2)",
-                  minHeight: 400,
-                }}
-              >
-                <div
-                  className="w-16 h-16 rounded-full flex items-center justify-center mb-6"
-                  style={{ background: "rgba(0,230,118,0.15)" }}
-                >
-                  <Icon name="CheckCircle" size={32} style={{ color: "#00E676" }} />
+              <div className="rounded-2xl flex flex-col items-center justify-center p-12 text-center shadow-sm"
+                style={{ background: "#fff", border: `1px solid rgba(14,165,160,0.25)`, minHeight: 400 }}>
+                <div className="w-16 h-16 rounded-full flex items-center justify-center mb-6"
+                  style={{ background: `rgba(14,165,160,0.12)` }}>
+                  <Icon name="CheckCircle" size={32} style={{ color: TEAL }} />
                 </div>
-                <h3
-                  className="text-2xl font-semibold text-white mb-3"
-                  style={{ fontFamily: "'Oswald', sans-serif" }}
-                >
+                <h3 className="text-2xl font-semibold text-foreground mb-3" style={{ fontFamily: "'Oswald', sans-serif" }}>
                   Заявка отправлена!
                 </h3>
-                <p
-                  className="text-muted-foreground text-sm"
-                  style={{ fontFamily: "'Golos Text', sans-serif" }}
-                >
+                <p className="text-muted-foreground text-sm">
                   Мы свяжемся с вами в ближайшее время и ответим на все вопросы.
                 </p>
               </div>
             ) : (
-              <form
-                onSubmit={handleFormSubmit}
-                className="rounded-2xl p-8"
-                style={{ background: "#141414", border: "1px solid #1f1f1f" }}
-              >
-                <h3
-                  className="text-2xl font-semibold text-white mb-6"
-                  style={{ fontFamily: "'Oswald', sans-serif" }}
-                >
+              <form onSubmit={handleFormSubmit} className="rounded-2xl p-8 shadow-sm"
+                style={{ background: "#fff", border: "1px solid #e5e7eb" }}>
+                <h3 className="text-2xl font-semibold text-foreground mb-6" style={{ fontFamily: "'Oswald', sans-serif" }}>
                   Оставьте заявку
                 </h3>
                 <div className="space-y-4">
+                  {[
+                    { label: "Ваше имя", key: "name", type: "text", ph: "Александр" },
+                    { label: "Телефон", key: "phone", type: "tel", ph: "+7 (___) ___-__-__" },
+                  ].map((field) => (
+                    <div key={field.key}>
+                      <label className="text-xs text-muted-foreground uppercase tracking-wider block mb-2">{field.label}</label>
+                      <input
+                        type={field.type}
+                        required={field.key === "name" || field.key === "phone"}
+                        value={formData[field.key as keyof typeof formData]}
+                        onChange={(e) => setFormData({ ...formData, [field.key]: e.target.value })}
+                        className="w-full px-4 py-3 rounded-lg text-sm text-foreground outline-none transition-all"
+                        style={{ background: "#f9fafb", border: "1px solid #e5e7eb" }}
+                        onFocus={(e) => (e.target.style.borderColor = TEAL)}
+                        onBlur={(e) => (e.target.style.borderColor = "#e5e7eb")}
+                        placeholder={field.ph}
+                      />
+                    </div>
+                  ))}
                   <div>
-                    <label
-                      className="text-xs text-muted-foreground uppercase tracking-wider block mb-2"
-                      style={{ fontFamily: "'Golos Text', sans-serif" }}
-                    >
-                      Ваше имя
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className="w-full px-4 py-3 rounded-lg text-sm text-white outline-none transition-all"
-                      style={{
-                        background: "#0d0d0d",
-                        border: "1px solid #2a2a2a",
-                        fontFamily: "'Golos Text', sans-serif",
-                      }}
-                      onFocus={(e) => (e.target.style.borderColor = "#00E676")}
-                      onBlur={(e) => (e.target.style.borderColor = "#2a2a2a")}
-                      placeholder="Александр"
-                    />
-                  </div>
-                  <div>
-                    <label
-                      className="text-xs text-muted-foreground uppercase tracking-wider block mb-2"
-                      style={{ fontFamily: "'Golos Text', sans-serif" }}
-                    >
-                      Телефон
-                    </label>
-                    <input
-                      type="tel"
-                      required
-                      value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      className="w-full px-4 py-3 rounded-lg text-sm text-white outline-none transition-all"
-                      style={{
-                        background: "#0d0d0d",
-                        border: "1px solid #2a2a2a",
-                        fontFamily: "'Golos Text', sans-serif",
-                      }}
-                      onFocus={(e) => (e.target.style.borderColor = "#00E676")}
-                      onBlur={(e) => (e.target.style.borderColor = "#2a2a2a")}
-                      placeholder="+7 (___) ___-__-__"
-                    />
-                  </div>
-                  <div>
-                    <label
-                      className="text-xs text-muted-foreground uppercase tracking-wider block mb-2"
-                      style={{ fontFamily: "'Golos Text', sans-serif" }}
-                    >
-                      Сообщение
-                    </label>
-                    <textarea
-                      rows={4}
-                      value={formData.message}
+                    <label className="text-xs text-muted-foreground uppercase tracking-wider block mb-2">Сообщение</label>
+                    <textarea rows={4} value={formData.message}
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                      className="w-full px-4 py-3 rounded-lg text-sm text-white outline-none transition-all resize-none"
-                      style={{
-                        background: "#0d0d0d",
-                        border: "1px solid #2a2a2a",
-                        fontFamily: "'Golos Text', sans-serif",
-                      }}
-                      onFocus={(e) => (e.target.style.borderColor = "#00E676")}
-                      onBlur={(e) => (e.target.style.borderColor = "#2a2a2a")}
-                      placeholder="Расскажите о своих целях..."
-                    />
+                      className="w-full px-4 py-3 rounded-lg text-sm text-foreground outline-none transition-all resize-none"
+                      style={{ background: "#f9fafb", border: "1px solid #e5e7eb" }}
+                      onFocus={(e) => (e.target.style.borderColor = TEAL)}
+                      onBlur={(e) => (e.target.style.borderColor = "#e5e7eb")}
+                      placeholder="Расскажите о своих целях..." />
                   </div>
-                  <button
-                    type="submit"
-                    className="w-full text-sm tracking-widest uppercase py-4 rounded-xl font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] mt-2"
-                    style={{
-                      background: "#00E676",
-                      color: "#0a0a0a",
-                      fontFamily: "'Oswald', sans-serif",
-                    }}
-                  >
+                  <button type="submit"
+                    className="w-full text-sm tracking-widest uppercase py-4 rounded-xl font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] text-white mt-2"
+                    style={{ background: TEAL, fontFamily: "'Oswald', sans-serif" }}>
                     Отправить заявку
                   </button>
                 </div>
@@ -1111,32 +713,20 @@ export default function Index() {
       </section>
 
       {/* FOOTER */}
-      <footer style={{ borderTop: "1px solid #1a1a1a", background: "#0a0a0a" }}>
+      <footer style={{ borderTop: "1px solid #e5e7eb", background: "#f9fafb" }}>
         <div className="max-w-7xl mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          <div
-            className="text-lg font-semibold tracking-widest"
-            style={{ color: "#00E676", fontFamily: "'Oswald', sans-serif" }}
-          >
-            IST<span className="text-white"> FIT</span>
+          <div className="text-lg font-semibold tracking-widest" style={{ color: TEAL, fontFamily: "'Oswald', sans-serif" }}>
+            IST<span className="text-foreground"> FIT</span>
           </div>
-          <p
-            className="text-xs text-muted-foreground"
-            style={{ fontFamily: "'Golos Text', sans-serif" }}
-          >
-            © 2024 IST FIT. Все права защищены.
-          </p>
+          <p className="text-xs text-muted-foreground">© 2024 IST FIT. Все права защищены.</p>
           <div className="flex gap-6">
             {[
               { label: "Главная", id: "home" },
               { label: "Тренеры", id: "trainers" },
               { label: "Абонементы", id: "plans" },
             ].map((l) => (
-              <button
-                key={l.label}
-                className="text-xs text-muted-foreground hover:text-white transition-colors"
-                style={{ fontFamily: "'Golos Text', sans-serif" }}
-                onClick={() => scrollTo(l.id)}
-              >
+              <button key={l.label} className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                onClick={() => scrollTo(l.id)}>
                 {l.label}
               </button>
             ))}
