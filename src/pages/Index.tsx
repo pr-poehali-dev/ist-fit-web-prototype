@@ -72,7 +72,6 @@ const galleryImages = [
   { src: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/bucket/f9c10069-59b0-46a2-915c-261d0506f15d.jpg", label: "Тренажёрный зал" },
   { src: MY_TRAINER_IMG, label: "Персональные тренировки" },
   { src: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/bucket/b40308ea-a013-411e-9dc0-16584902eaec.jpg", label: "Кардио-зона" },
-  { src: HERO_IMG, label: "Силовая зона" },
 ];
 
 function useInView(threshold = 0.15) {
@@ -360,7 +359,7 @@ export default function Index() {
           <SectionReveal delay={150}>
             <div className="relative">
               <div className="rounded-2xl overflow-hidden shadow-md" style={{ aspectRatio: "4/5", border: "1px solid #e5e7eb" }}>
-                <img src={GALLERY_IMG} alt="Зал" className="w-full h-full object-cover" />
+                <img src="https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/bucket/1c8b736b-c07f-4dda-b2b3-7c5359357a71.jpg" alt="Команда IST FIT" className="w-full h-full object-cover" />
               </div>
               <div className="absolute -bottom-6 -left-6 rounded-xl p-6 shadow-lg"
                 style={{ background: "#fff", border: "1px solid #e5e7eb", minWidth: 180 }}>
@@ -446,12 +445,12 @@ export default function Index() {
           </h2>
         </SectionReveal>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {galleryImages.map((img, i) => (
             <SectionReveal key={i} delay={i * 70}>
               <div
                 className="relative overflow-hidden rounded-xl cursor-pointer group shadow-sm"
-                style={{ aspectRatio: i === 0 || i === 5 ? "4/5" : "1/1" }}
+                style={{ aspectRatio: "4/3" }}
                 onClick={() => setLightboxImg(img.src)}
               >
                 <img src={img.src} alt={img.label}
