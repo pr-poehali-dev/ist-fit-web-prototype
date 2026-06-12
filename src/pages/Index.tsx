@@ -32,25 +32,11 @@ const trainers = [
     experience: "6 лет опыта",
     specialization: ["Йога", "Пилатес", "Групповые занятия"],
     bio: "Сертифицированный инструктор по хатха-йоге и пилатесу. Помогает улучшить гибкость, осанку и внутренний баланс. Ведёт утренние и вечерние групповые занятия.",
-    img: TRAINER2_IMG,
+    img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/bucket/de043472-c6be-4259-b6dc-d1182340b81d.jpg",
     reviews: [
       { author: "Анна В.", text: "Занимаюсь у Елены уже год. Спина болеть перестала, настроение всегда отличное!", stars: 5 },
       { author: "Светлана М.", text: "Атмосфера на занятиях просто волшебная. Лена очень вдохновляет.", stars: 5 },
       { author: "Ольга Т.", text: "Отличный тренер, всегда объясняет технику и следит за правильностью выполнения.", stars: 5 },
-    ],
-  },
-  {
-    id: 3,
-    name: "Денис Ковалёв",
-    role: "Тренер по кардио и HIIT",
-    experience: "5 лет опыта",
-    specialization: ["HIIT", "Кардио", "Похудение"],
-    bio: "Бывший профессиональный легкоатлет. Специализируется на высокоинтенсивных тренировках для сжигания жира и улучшения выносливости. Результаты клиентов говорят сами за себя.",
-    img: TRAINER1_IMG,
-    reviews: [
-      { author: "Роман С.", text: "Минус 12 кг за 3 месяца! Тренировки тяжёлые, но эффект реальный.", stars: 5 },
-      { author: "Валерия Ю.", text: "Денис умеет мотивировать даже когда совсем нет сил. Топовый тренер.", stars: 5 },
-      { author: "Кирилл Б.", text: "После его курса пробежал свой первый полумарафон. Спасибо!", stars: 5 },
     ],
   },
 ];
@@ -83,11 +69,9 @@ const plans = [
 ];
 
 const galleryImages = [
-  { src: HERO_IMG, label: "Тренажёрный зал" },
+  { src: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/bucket/f9c10069-59b0-46a2-915c-261d0506f15d.jpg", label: "Тренажёрный зал" },
   { src: MY_TRAINER_IMG, label: "Персональные тренировки" },
-  { src: GALLERY_IMG, label: "Групповые занятия" },
-  { src: TRAINER2_IMG, label: "Йога и пилатес" },
-  { src: GALLERY_IMG, label: "Кардио-зона" },
+  { src: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/bucket/b40308ea-a013-411e-9dc0-16584902eaec.jpg", label: "Кардио-зона" },
   { src: HERO_IMG, label: "Силовая зона" },
 ];
 
@@ -335,22 +319,7 @@ export default function Index() {
           </div>
         </div>
 
-        {/* Stats bar */}
-        <div className="absolute bottom-0 left-0 right-0 z-10"
-          style={{ background: "rgba(255,255,255,0.92)", backdropFilter: "blur(10px)", borderTop: "1px solid #e5e7eb" }}>
-          <div className="max-w-7xl mx-auto px-6 py-5 grid grid-cols-3">
-            {[
-              { val: "—", label: "Клиентов" },
-              { val: "—", label: "Тренеров" },
-              { val: "Новый", label: "Фитнес-центр" },
-            ].map((s, i) => (
-              <div key={i} className="text-center" style={{ borderLeft: i > 0 ? "1px solid #e5e7eb" : "none" }}>
-                <div className="text-2xl font-semibold" style={{ color: TEAL, fontFamily: "'Oswald', sans-serif" }}>{s.val}</div>
-                <div className="text-xs text-muted-foreground mt-0.5">{s.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
+
       </section>
 
       {/* ABOUT */}
@@ -701,7 +670,7 @@ export default function Index() {
           <div className="text-lg font-semibold tracking-widest" style={{ color: TEAL, fontFamily: "'Oswald', sans-serif" }}>
             IST<span className="text-foreground"> FIT</span>
           </div>
-          <p className="text-xs text-muted-foreground">© 2024 IST FIT. Все права защищены.</p>
+          <p className="text-xs text-muted-foreground">© 2026 IST FIT. Все права защищены.</p>
           <div className="flex gap-6">
             {[
               { label: "Главная", id: "home" },
