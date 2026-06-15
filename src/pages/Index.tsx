@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import Icon from "@/components/ui/icon";
 
 const HERO_IMG = "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/32451844-e9fb-4c86-ab75-580ff12cbef9.jpg";
@@ -141,11 +142,12 @@ type Trainer = (typeof trainers)[0];
 type GymRoom = (typeof gymRooms)[0];
 
 export default function Index() {
+  const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState("home");
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedTrainer, setSelectedTrainer] = useState<Trainer | null>(null);
   const [selectedGym, setSelectedGym] = useState<GymRoom | null>(null);
-  const [formData, setFormData] = useState({ name: "", phone: "", message: "" });
+  const [formData, setFormData] = useState({ name: "", phone: "", email: "", message: "" });
   const [formSent, setFormSent] = useState(false);
 
   const navLinks = [
@@ -177,6 +179,18 @@ export default function Index() {
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const stored = localStorage.getItem("ist_leads");
+    const leads = stored ? JSON.parse(stored) : [];
+    leads.unshift({
+      id: `lead-${Date.now()}`,
+      date: new Date().toISOString(),
+      name: formData.name,
+      phone: formData.phone,
+      email: formData.email,
+      message: formData.message,
+      status: "new",
+    });
+    localStorage.setItem("ist_leads", JSON.stringify(leads));
     setFormSent(true);
   };
 
@@ -313,12 +327,20 @@ export default function Index() {
             ))}
           </div>
 
-          <button
-            className="hidden md:block text-xs tracking-widest uppercase px-5 py-2.5 rounded-lg font-semibold transition-all hover:scale-105 text-white"
-            style={{ background: TEAL, fontFamily: "'Oswald', sans-serif" }}
-            onClick={() => scrollTo("contacts")}>
-            Записаться
-          </button>
+          <div className="hidden md:flex items-center gap-3">
+            <button
+              className="text-xs tracking-widest uppercase px-4 py-2.5 rounded-lg font-semibold transition-all hover:scale-105 border"
+              style={{ borderColor: TEAL, color: TEAL, background: "transparent", fontFamily: "'Oswald', sans-serif" }}
+              onClick={() => navigate("/admin")}>
+              ЛК
+            </button>
+            <button
+              className="text-xs tracking-widest uppercase px-5 py-2.5 rounded-lg font-semibold transition-all hover:scale-105 text-white"
+              style={{ background: TEAL, fontFamily: "'Oswald', sans-serif" }}
+              onClick={() => scrollTo("contacts")}>
+              Записаться
+            </button>
+          </div>
 
           <button className="md:hidden text-foreground" onClick={() => setMenuOpen(!menuOpen)}>
             <Icon name={menuOpen ? "X" : "Menu"} size={24} />
@@ -685,6 +707,7 @@ export default function Index() {
                   {[
                     { label: "Ваше имя", key: "name", type: "text", ph: "Александр" },
                     { label: "Телефон", key: "phone", type: "tel", ph: "+7 (___) ___-__-__" },
+                    { label: "Email", key: "email", type: "email", ph: "example@mail.ru" },
                   ].map((field) => (
                     <div key={field.key}>
                       <label className="text-xs text-muted-foreground uppercase tracking-wider block mb-2">{field.label}</label>
