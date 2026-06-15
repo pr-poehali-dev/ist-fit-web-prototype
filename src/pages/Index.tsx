@@ -154,6 +154,7 @@ export default function Index() {
   const navLinks = [
     { id: "home", label: "Главная" },
     { id: "about", label: "О нас" },
+    { id: "news", label: "Новости" },
     { id: "trainers", label: "Тренеры" },
     { id: "gallery", label: "Залы" },
     { id: "schedule", label: "Расписание" },
@@ -461,6 +462,69 @@ export default function Index() {
               </div>
             </div>
           </SectionReveal>
+        </div>
+      </section>
+
+      {/* NEWS */}
+      <section id="news" className="py-28" style={{ background: "#f8fafa" }}>
+        <div className="max-w-7xl mx-auto px-6">
+          <SectionReveal>
+            <p className="text-xs tracking-[0.3em] uppercase mb-4" style={{ color: TEAL, fontFamily: "'Oswald', sans-serif" }}>
+              Новости
+            </p>
+            <h2 className="text-5xl font-semibold text-foreground mb-16 leading-tight" style={{ fontFamily: "'Oswald', sans-serif" }}>
+              ПОСЛЕДНИЕ<br />НОВОСТИ
+            </h2>
+          </SectionReveal>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              {
+                date: "10 июня 2026",
+                tag: "Акция",
+                title: "Скидка 20% на абонемент «Прогресс» весь июнь",
+                text: "Только до конца месяца оформляй самый популярный абонемент со скидкой. Безлимитные посещения, групповые занятия и персональная тренировка в подарок.",
+                img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/bucket/fcceda2b-01c6-44ca-829f-f2504141df8b.jpg",
+              },
+              {
+                date: "3 июня 2026",
+                tag: "Событие",
+                title: "Открытый день в IST FIT — приходи с другом бесплатно",
+                text: "В эту субботу мы открываем двери для всех желающих. Попробуй тренировку, познакомься с тренерами и получи бесплатную консультацию по питанию.",
+                img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/bucket/1c8b736b-c07f-4dda-b2b3-7c5359357a71.jpg",
+              },
+              {
+                date: "25 мая 2026",
+                tag: "Обновление",
+                title: "Новое оборудование в кардио-зоне",
+                text: "Мы обновили парк кардиотренажёров: добавили 4 беговые дорожки Pro Fitness и 2 гребных тренажёра. Теперь очередей нет даже в час пик.",
+                img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/bucket/f9c10069-59b0-46a2-915c-261d0506f15d.jpg",
+              },
+            ].map((item, i) => (
+              <SectionReveal key={i} delay={i * 100}>
+                <div className="rounded-2xl overflow-hidden bg-white group cursor-pointer card-hover"
+                  style={{ border: "1px solid #e5e7eb", boxShadow: "0 2px 8px rgba(0,0,0,0.04)" }}>
+                  <div className="relative overflow-hidden" style={{ aspectRatio: "16/9" }}>
+                    <img src={item.img} alt={item.title}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                    <div className="absolute top-3 left-3">
+                      <span className="px-2.5 py-1 rounded-full text-xs font-semibold text-white"
+                        style={{ background: TEAL, fontFamily: "'Oswald', sans-serif" }}>
+                        {item.tag}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="p-6">
+                    <p className="text-xs text-muted-foreground mb-3">{item.date}</p>
+                    <h3 className="text-lg font-semibold text-foreground mb-3 leading-snug" style={{ fontFamily: "'Oswald', sans-serif" }}>
+                      {item.title}
+                    </h3>
+                    <p className="text-sm text-foreground/65 leading-relaxed">{item.text}</p>
+                  </div>
+                </div>
+              </SectionReveal>
+            ))}
+          </div>
         </div>
       </section>
 
