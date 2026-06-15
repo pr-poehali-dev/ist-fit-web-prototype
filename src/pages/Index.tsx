@@ -149,8 +149,7 @@ export default function Index() {
   const [selectedGym, setSelectedGym] = useState<GymRoom | null>(null);
   const [formData, setFormData] = useState({ name: "", phone: "", email: "", message: "" });
   const [formSent, setFormSent] = useState(false);
-  const [scheduleDay, setScheduleDay] = useState("ПН");
-  const [scheduleLocFilter, setScheduleLocFilter] = useState<number | null>(null);
+
 
   const navLinks = [
     { id: "home", label: "Главная" },
@@ -569,10 +568,6 @@ export default function Index() {
       {(() => {
         const DAYS = ["ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ", "ВС"];
         const DAY_LABELS: Record<string, string> = { ПН: "Понедельник", ВТ: "Вторник", СР: "Среда", ЧТ: "Четверг", ПТ: "Пятница", СБ: "Суббота", ВС: "Воскресенье" };
-        const activeDay = scheduleDay;
-        const setActiveDay = setScheduleDay;
-        const activeLocFilter = scheduleLocFilter;
-        const setActiveLocFilter = setScheduleLocFilter;
 
         const LOCATION_COLORS: Record<number, string> = { 1: "#0ea5a0", 2: "#f59e0b", 3: "#8b5cf6" };
 
@@ -617,11 +612,12 @@ export default function Index() {
           3: gymRooms[1],
         };
 
-        const dayItems = schedule
-          .filter((s) => s.day === activeDay && (activeLocFilter === null || s.location.id === activeLocFilter))
-          .sort((a, b) => a.time.localeCompare(b.time));
+        // Все уникальные временные слоты, отсортированные
+        const allTimes = Array.from(new Set(schedule.map((s) => s.time))).sort((a, b) => a.localeCompare(b));
 
-        const locationNames: Record<number, string> = { 1: "Тренажёрный зал", 2: "Кардио-зона", 3: "Зона персональных тренировок" };
+        // Быстрый поиск: { "ПН|07:00–08:00": item }
+        const cellMap: Record<string, typeof schedule[0]> = {};
+        schedule.forEach((s) => { cellMap[`${s.day}|${s.time}`] = s; });
 
         return (
           <section id="schedule" className="py-28 max-w-7xl mx-auto px-6">
@@ -633,105 +629,99 @@ export default function Index() {
                 РАСПИСАНИЕ<br />ТРЕНИРОВОК
               </h2>
               <p className="text-foreground/60 mb-10 max-w-md text-sm">
-                Нажмите на карточку тренировки, чтобы узнать больше о тренере или зале
+                Нажмите на занятие, чтобы перейти к тренеру или залу
               </p>
             </SectionReveal>
 
-            {/* Day tabs */}
-            <SectionReveal delay={80}>
-              <div className="flex gap-2 flex-wrap mb-6">
-                {DAYS.map((day) => (
-                  <button key={day} onClick={() => setActiveDay(day)}
-                    className="px-4 py-2 rounded-lg text-sm font-semibold transition-all"
-                    style={{
-                      background: activeDay === day ? TEAL : "#f3f4f6",
-                      color: activeDay === day ? "#fff" : "#6b7280",
-                      fontFamily: "'Oswald', sans-serif",
-                    }}>
-                    {day}
-                    <span className="ml-1.5 text-xs opacity-70">{DAY_LABELS[day].slice(0, 3)}</span>
-                  </button>
-                ))}
-              </div>
-
-              {/* Location filter */}
-              <div className="flex gap-2 flex-wrap mb-8">
-                <button onClick={() => setActiveLocFilter(null)}
-                  className="px-3 py-1.5 rounded-full text-xs font-medium transition-all border"
-                  style={{ borderColor: activeLocFilter === null ? TEAL : "#e5e7eb", background: activeLocFilter === null ? `rgba(14,165,160,0.08)` : "transparent", color: activeLocFilter === null ? TEAL : "#9ca3af" }}>
-                  Все залы
-                </button>
-                {Object.entries(locationNames).map(([id, name]) => (
-                  <button key={id} onClick={() => setActiveLocFilter(activeLocFilter === Number(id) ? null : Number(id))}
-                    className="px-3 py-1.5 rounded-full text-xs font-medium transition-all border flex items-center gap-1.5"
-                    style={{
-                      borderColor: activeLocFilter === Number(id) ? LOCATION_COLORS[Number(id)] : "#e5e7eb",
-                      background: activeLocFilter === Number(id) ? `${LOCATION_COLORS[Number(id)]}14` : "transparent",
-                      color: activeLocFilter === Number(id) ? LOCATION_COLORS[Number(id)] : "#9ca3af",
-                    }}>
-                    <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: LOCATION_COLORS[Number(id)] }} />
+            {/* Legend */}
+            <SectionReveal delay={60}>
+              <div className="flex gap-4 flex-wrap mb-8">
+                {([
+                  [1, "Тренажёрный зал"],
+                  [2, "Кардио-зона"],
+                  [3, "Зона персональных тренировок"],
+                ] as [number, string][]).map(([id, name]) => (
+                  <div key={id} className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <span className="w-3 h-3 rounded-sm flex-shrink-0" style={{ background: LOCATION_COLORS[id] }} />
                     {name}
-                  </button>
+                  </div>
                 ))}
               </div>
             </SectionReveal>
 
-            {/* Cards */}
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {dayItems.length === 0 && (
-                <div className="col-span-3 text-center py-16 text-muted-foreground text-sm">
-                  Занятий нет
-                </div>
-              )}
-              {dayItems.map((item, i) => {
-                const gym = gymRoomMap[item.location.id];
-                return (
-                  <SectionReveal key={item.id} delay={i * 60}>
-                    <div className="rounded-xl overflow-hidden shadow-sm group"
-                      style={{ border: `1px solid #e5e7eb`, background: "#fff" }}>
-                      {/* Colored top bar */}
-                      <div className="h-1" style={{ background: LOCATION_COLORS[item.location.id] }} />
-                      <div className="p-5">
-                        <div className="flex items-center justify-between mb-3">
-                          <span className="text-xs font-semibold px-2.5 py-1 rounded-full"
-                            style={{ background: `${LOCATION_COLORS[item.location.id]}14`, color: LOCATION_COLORS[item.location.id] }}>
-                            {item.time}
-                          </span>
-                          <span className="text-xs text-muted-foreground">{item.location.name}</span>
-                        </div>
-                        <h3 className="text-base font-semibold text-foreground mb-4" style={{ fontFamily: "'Oswald', sans-serif" }}>
-                          {item.name.toUpperCase()}
-                        </h3>
-                        <div className="flex items-center justify-between">
-                          {/* Trainer link */}
-                          <button
-                            className="flex items-center gap-2 hover:opacity-80 transition-opacity"
-                            onClick={() => {
-                              const t = trainers.find((tr) => tr.name === item.trainer.name);
-                              if (t) setSelectedTrainer(t);
-                            }}>
-                            <img src={item.trainer.img} alt={item.trainer.name}
-                              className="w-8 h-8 rounded-full object-cover flex-shrink-0"
-                              style={{ border: `2px solid ${LOCATION_COLORS[item.location.id]}` }} />
-                            <span className="text-xs text-foreground/70 text-left leading-tight">{item.trainer.name}</span>
-                          </button>
-                          {/* Gym link */}
-                          {gym && (
-                            <button
-                              className="flex items-center gap-1 text-xs transition-opacity hover:opacity-70"
-                              style={{ color: TEAL }}
-                              onClick={() => setSelectedGym(gym)}>
-                              <Icon name="MapPin" size={12} />
-                              <span>Зал</span>
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </SectionReveal>
-                );
-              })}
-            </div>
+            {/* Timetable grid */}
+            <SectionReveal delay={100}>
+              <div className="overflow-x-auto rounded-xl" style={{ border: "1px solid #e5e7eb" }}>
+                <table className="w-full min-w-[640px] border-collapse" style={{ background: "#fff" }}>
+                  <thead>
+                    <tr style={{ background: "#f9fafb" }}>
+                      <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider"
+                        style={{ borderBottom: "1px solid #e5e7eb", borderRight: "1px solid #e5e7eb", width: "110px" }}>
+                        Время
+                      </th>
+                      {DAYS.map((day) => (
+                        <th key={day} className="text-center px-2 py-3 text-xs font-semibold uppercase tracking-wider"
+                          style={{
+                            borderBottom: "1px solid #e5e7eb",
+                            borderRight: "1px solid #e5e7eb",
+                            color: day === "СБ" || day === "ВС" ? TEAL : "#374151",
+                            fontFamily: "'Oswald', sans-serif",
+                          }}>
+                          {day}
+                          <div className="text-[10px] font-normal opacity-50 mt-0.5" style={{ fontFamily: "'Golos Text', sans-serif" }}>
+                            {DAY_LABELS[day]}
+                          </div>
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {allTimes.map((time, ri) => (
+                      <tr key={time} style={{ background: ri % 2 === 0 ? "#fff" : "#fafafa" }}>
+                        <td className="px-4 py-3 text-xs font-medium text-muted-foreground whitespace-nowrap"
+                          style={{ borderBottom: "1px solid #f3f4f6", borderRight: "1px solid #e5e7eb", verticalAlign: "middle" }}>
+                          {time}
+                        </td>
+                        {DAYS.map((day) => {
+                          const item = cellMap[`${day}|${time}`];
+                          const gym = item ? gymRoomMap[item.location.id] : null;
+                          return (
+                            <td key={day} className="px-2 py-2 text-center align-middle"
+                              style={{ borderBottom: "1px solid #f3f4f6", borderRight: "1px solid #e5e7eb", minWidth: "100px" }}>
+                              {item ? (
+                                <div className="rounded-lg px-2 py-2 text-left transition-all hover:scale-[1.02] cursor-default"
+                                  style={{ background: `${LOCATION_COLORS[item.location.id]}12`, borderLeft: `3px solid ${LOCATION_COLORS[item.location.id]}` }}>
+                                  <div className="text-xs font-semibold text-foreground leading-snug mb-1"
+                                    style={{ fontFamily: "'Oswald', sans-serif" }}>
+                                    {item.name}
+                                  </div>
+                                  <button
+                                    className="text-xs leading-snug hover:underline block w-full text-left"
+                                    style={{ color: LOCATION_COLORS[item.location.id] }}
+                                    onClick={() => { const t = trainers.find((tr) => tr.name === item.trainer.name); if (t) setSelectedTrainer(t); }}>
+                                    {item.trainer.name}
+                                  </button>
+                                  {gym && (
+                                    <button
+                                      className="text-xs leading-snug hover:underline block w-full text-left mt-0.5"
+                                      style={{ color: "#9ca3af" }}
+                                      onClick={() => setSelectedGym(gym)}>
+                                      {item.location.name}
+                                    </button>
+                                  )}
+                                </div>
+                              ) : (
+                                <span className="text-muted-foreground/20 text-lg select-none">·</span>
+                              )}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </SectionReveal>
           </section>
         );
       })()}
