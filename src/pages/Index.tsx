@@ -155,7 +155,7 @@ export default function Index() {
     { id: "home", label: "Главная" },
     { id: "about", label: "О нас" },
     { id: "trainers", label: "Тренеры" },
-    { id: "gallery", label: "Галерея" },
+    { id: "gallery", label: "Залы" },
     { id: "schedule", label: "Расписание" },
     { id: "plans", label: "Абонементы" },
     { id: "contacts", label: "Контакты" },
@@ -531,10 +531,10 @@ export default function Index() {
       <section id="gallery" className="py-28 max-w-7xl mx-auto px-6">
         <SectionReveal>
           <p className="text-xs tracking-[0.3em] uppercase mb-4" style={{ color: TEAL, fontFamily: "'Oswald', sans-serif" }}>
-            Галерея
+            Залы
           </p>
           <h2 className="text-5xl font-semibold text-foreground mb-16 leading-tight" style={{ fontFamily: "'Oswald', sans-serif" }}>
-            НАШ<br />ЗАЛ
+            НАШИ<br />ЗАЛЫ
           </h2>
         </SectionReveal>
 
