@@ -149,12 +149,15 @@ export default function Index() {
   const [selectedGym, setSelectedGym] = useState<GymRoom | null>(null);
   const [formData, setFormData] = useState({ name: "", phone: "", email: "", message: "" });
   const [formSent, setFormSent] = useState(false);
+  const [scheduleDay, setScheduleDay] = useState("ПН");
+  const [scheduleLocFilter, setScheduleLocFilter] = useState<number | null>(null);
 
   const navLinks = [
     { id: "home", label: "Главная" },
     { id: "about", label: "О нас" },
     { id: "trainers", label: "Тренеры" },
     { id: "gallery", label: "Галерея" },
+    { id: "schedule", label: "Расписание" },
     { id: "plans", label: "Абонементы" },
     { id: "contacts", label: "Контакты" },
   ];
@@ -561,6 +564,177 @@ export default function Index() {
           ))}
         </div>
       </section>
+
+      {/* SCHEDULE */}
+      {(() => {
+        const DAYS = ["ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ", "ВС"];
+        const DAY_LABELS: Record<string, string> = { ПН: "Понедельник", ВТ: "Вторник", СР: "Среда", ЧТ: "Четверг", ПТ: "Пятница", СБ: "Суббота", ВС: "Воскресенье" };
+        const activeDay = scheduleDay;
+        const setActiveDay = setScheduleDay;
+        const activeLocFilter = scheduleLocFilter;
+        const setActiveLocFilter = setScheduleLocFilter;
+
+        const LOCATION_COLORS: Record<number, string> = { 1: "#0ea5a0", 2: "#f59e0b", 3: "#8b5cf6" };
+
+        const schedule = [
+          { id: 1, time: "07:00–08:00", day: "ПН", name: "Утренний фитнес", trainer: { id: 2, name: "Кристина Орлова", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/bc180fed-e45c-4061-be08-e3b2de5a27d7.jpg" }, location: { id: 2, name: "Кардио-зона" } },
+          { id: 2, time: "09:00–10:30", day: "ПН", name: "Силовая тренировка", trainer: { id: 1, name: "Андрей Лебедев", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/b265f983-b890-4a62-a6f5-8659494513c3.jpg" }, location: { id: 1, name: "Тренажёрный зал" } },
+          { id: 3, time: "12:00–13:00", day: "ПН", name: "Кардио-сессия", trainer: { id: 3, name: "Михаил Дроздов", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/32451844-e9fb-4c86-ab75-580ff12cbef9.jpg" }, location: { id: 2, name: "Кардио-зона" } },
+          { id: 4, time: "18:00–19:30", day: "ПН", name: "Персональная тренировка", trainer: { id: 1, name: "Андрей Лебедев", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/b265f983-b890-4a62-a6f5-8659494513c3.jpg" }, location: { id: 3, name: "Зона персональных тренировок" } },
+          { id: 5, time: "20:00–21:00", day: "ПН", name: "Вечерний стретчинг", trainer: { id: 2, name: "Кристина Орлова", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/bc180fed-e45c-4061-be08-e3b2de5a27d7.jpg" }, location: { id: 3, name: "Зона персональных тренировок" } },
+          { id: 6, time: "07:00–08:00", day: "ВТ", name: "Утренний фитнес", trainer: { id: 2, name: "Кристина Орлова", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/bc180fed-e45c-4061-be08-e3b2de5a27d7.jpg" }, location: { id: 2, name: "Кардио-зона" } },
+          { id: 7, time: "10:00–11:30", day: "ВТ", name: "Функциональный тренинг", trainer: { id: 3, name: "Михаил Дроздов", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/32451844-e9fb-4c86-ab75-580ff12cbef9.jpg" }, location: { id: 1, name: "Тренажёрный зал" } },
+          { id: 8, time: "13:00–14:00", day: "ВТ", name: "Кардио-сессия", trainer: { id: 2, name: "Кристина Орлова", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/bc180fed-e45c-4061-be08-e3b2de5a27d7.jpg" }, location: { id: 2, name: "Кардио-зона" } },
+          { id: 9, time: "17:00–18:30", day: "ВТ", name: "Силовая тренировка", trainer: { id: 1, name: "Андрей Лебедев", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/b265f983-b890-4a62-a6f5-8659494513c3.jpg" }, location: { id: 1, name: "Тренажёрный зал" } },
+          { id: 10, time: "19:00–20:00", day: "ВТ", name: "Персональная тренировка", trainer: { id: 3, name: "Михаил Дроздов", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/32451844-e9fb-4c86-ab75-580ff12cbef9.jpg" }, location: { id: 3, name: "Зона персональных тренировок" } },
+          { id: 11, time: "07:00–08:00", day: "СР", name: "Утренний фитнес", trainer: { id: 2, name: "Кристина Орлова", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/bc180fed-e45c-4061-be08-e3b2de5a27d7.jpg" }, location: { id: 2, name: "Кардио-зона" } },
+          { id: 12, time: "09:00–10:30", day: "СР", name: "Силовая тренировка", trainer: { id: 3, name: "Михаил Дроздов", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/32451844-e9fb-4c86-ab75-580ff12cbef9.jpg" }, location: { id: 1, name: "Тренажёрный зал" } },
+          { id: 13, time: "11:00–12:00", day: "СР", name: "Кардио-сессия", trainer: { id: 2, name: "Кристина Орлова", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/bc180fed-e45c-4061-be08-e3b2de5a27d7.jpg" }, location: { id: 2, name: "Кардио-зона" } },
+          { id: 14, time: "18:00–19:30", day: "СР", name: "Функциональный тренинг", trainer: { id: 3, name: "Михаил Дроздов", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/32451844-e9fb-4c86-ab75-580ff12cbef9.jpg" }, location: { id: 1, name: "Тренажёрный зал" } },
+          { id: 15, time: "20:00–21:00", day: "СР", name: "Вечерний стретчинг", trainer: { id: 2, name: "Кристина Орлова", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/bc180fed-e45c-4061-be08-e3b2de5a27d7.jpg" }, location: { id: 3, name: "Зона персональных тренировок" } },
+          { id: 16, time: "07:00–08:00", day: "ЧТ", name: "Утренний фитнес", trainer: { id: 2, name: "Кристина Орлова", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/bc180fed-e45c-4061-be08-e3b2de5a27d7.jpg" }, location: { id: 2, name: "Кардио-зона" } },
+          { id: 17, time: "10:00–11:30", day: "ЧТ", name: "Силовая тренировка", trainer: { id: 1, name: "Андрей Лебедев", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/b265f983-b890-4a62-a6f5-8659494513c3.jpg" }, location: { id: 1, name: "Тренажёрный зал" } },
+          { id: 18, time: "12:00–13:00", day: "ЧТ", name: "Кардио-сессия", trainer: { id: 3, name: "Михаил Дроздов", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/32451844-e9fb-4c86-ab75-580ff12cbef9.jpg" }, location: { id: 2, name: "Кардио-зона" } },
+          { id: 19, time: "17:00–18:30", day: "ЧТ", name: "Функциональный тренинг", trainer: { id: 3, name: "Михаил Дроздов", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/32451844-e9fb-4c86-ab75-580ff12cbef9.jpg" }, location: { id: 1, name: "Тренажёрный зал" } },
+          { id: 20, time: "19:00–20:00", day: "ЧТ", name: "Персональная тренировка", trainer: { id: 1, name: "Андрей Лебедев", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/b265f983-b890-4a62-a6f5-8659494513c3.jpg" }, location: { id: 3, name: "Зона персональных тренировок" } },
+          { id: 21, time: "07:00–08:00", day: "ПТ", name: "Утренний фитнес", trainer: { id: 2, name: "Кристина Орлова", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/bc180fed-e45c-4061-be08-e3b2de5a27d7.jpg" }, location: { id: 2, name: "Кардио-зона" } },
+          { id: 22, time: "09:00–10:30", day: "ПТ", name: "Силовая тренировка", trainer: { id: 1, name: "Андрей Лебедев", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/b265f983-b890-4a62-a6f5-8659494513c3.jpg" }, location: { id: 1, name: "Тренажёрный зал" } },
+          { id: 23, time: "13:00–14:00", day: "ПТ", name: "Кардио-сессия", trainer: { id: 2, name: "Кристина Орлова", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/bc180fed-e45c-4061-be08-e3b2de5a27d7.jpg" }, location: { id: 2, name: "Кардио-зона" } },
+          { id: 24, time: "18:00–19:30", day: "ПТ", name: "Функциональный тренинг", trainer: { id: 3, name: "Михаил Дроздов", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/32451844-e9fb-4c86-ab75-580ff12cbef9.jpg" }, location: { id: 1, name: "Тренажёрный зал" } },
+          { id: 25, time: "20:00–21:00", day: "ПТ", name: "Вечерний стретчинг", trainer: { id: 2, name: "Кристина Орлова", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/bc180fed-e45c-4061-be08-e3b2de5a27d7.jpg" }, location: { id: 3, name: "Зона персональных тренировок" } },
+          { id: 26, time: "09:00–10:30", day: "СБ", name: "Силовая тренировка", trainer: { id: 1, name: "Андрей Лебедев", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/b265f983-b890-4a62-a6f5-8659494513c3.jpg" }, location: { id: 1, name: "Тренажёрный зал" } },
+          { id: 27, time: "10:00–11:00", day: "СБ", name: "Кардио-сессия", trainer: { id: 3, name: "Михаил Дроздов", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/32451844-e9fb-4c86-ab75-580ff12cbef9.jpg" }, location: { id: 2, name: "Кардио-зона" } },
+          { id: 28, time: "12:00–13:00", day: "СБ", name: "Функциональный тренинг", trainer: { id: 3, name: "Михаил Дроздов", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/32451844-e9fb-4c86-ab75-580ff12cbef9.jpg" }, location: { id: 1, name: "Тренажёрный зал" } },
+          { id: 29, time: "14:00–15:00", day: "СБ", name: "Персональная тренировка", trainer: { id: 1, name: "Андрей Лебедев", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/b265f983-b890-4a62-a6f5-8659494513c3.jpg" }, location: { id: 3, name: "Зона персональных тренировок" } },
+          { id: 30, time: "10:00–11:30", day: "ВС", name: "Силовая тренировка", trainer: { id: 3, name: "Михаил Дроздов", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/32451844-e9fb-4c86-ab75-580ff12cbef9.jpg" }, location: { id: 1, name: "Тренажёрный зал" } },
+          { id: 31, time: "11:00–12:00", day: "ВС", name: "Кардио-сессия", trainer: { id: 2, name: "Кристина Орлова", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/bc180fed-e45c-4061-be08-e3b2de5a27d7.jpg" }, location: { id: 2, name: "Кардио-зона" } },
+          { id: 32, time: "13:00–14:00", day: "ВС", name: "Вечерний стретчинг", trainer: { id: 2, name: "Кристина Орлова", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/bc180fed-e45c-4061-be08-e3b2de5a27d7.jpg" }, location: { id: 3, name: "Зона персональных тренировок" } },
+        ];
+
+        const gymRoomMap: Record<number, typeof gymRooms[0]> = {
+          1: gymRooms[0],
+          2: gymRooms[2],
+          3: gymRooms[1],
+        };
+
+        const dayItems = schedule
+          .filter((s) => s.day === activeDay && (activeLocFilter === null || s.location.id === activeLocFilter))
+          .sort((a, b) => a.time.localeCompare(b.time));
+
+        const locationNames: Record<number, string> = { 1: "Тренажёрный зал", 2: "Кардио-зона", 3: "Зона персональных тренировок" };
+
+        return (
+          <section id="schedule" className="py-28 max-w-7xl mx-auto px-6">
+            <SectionReveal>
+              <p className="text-xs tracking-[0.3em] uppercase mb-4" style={{ color: TEAL, fontFamily: "'Oswald', sans-serif" }}>
+                Расписание
+              </p>
+              <h2 className="text-5xl font-semibold text-foreground mb-4 leading-tight" style={{ fontFamily: "'Oswald', sans-serif" }}>
+                РАСПИСАНИЕ<br />ТРЕНИРОВОК
+              </h2>
+              <p className="text-foreground/60 mb-10 max-w-md text-sm">
+                Нажмите на карточку тренировки, чтобы узнать больше о тренере или зале
+              </p>
+            </SectionReveal>
+
+            {/* Day tabs */}
+            <SectionReveal delay={80}>
+              <div className="flex gap-2 flex-wrap mb-6">
+                {DAYS.map((day) => (
+                  <button key={day} onClick={() => setActiveDay(day)}
+                    className="px-4 py-2 rounded-lg text-sm font-semibold transition-all"
+                    style={{
+                      background: activeDay === day ? TEAL : "#f3f4f6",
+                      color: activeDay === day ? "#fff" : "#6b7280",
+                      fontFamily: "'Oswald', sans-serif",
+                    }}>
+                    {day}
+                    <span className="ml-1.5 text-xs opacity-70">{DAY_LABELS[day].slice(0, 3)}</span>
+                  </button>
+                ))}
+              </div>
+
+              {/* Location filter */}
+              <div className="flex gap-2 flex-wrap mb-8">
+                <button onClick={() => setActiveLocFilter(null)}
+                  className="px-3 py-1.5 rounded-full text-xs font-medium transition-all border"
+                  style={{ borderColor: activeLocFilter === null ? TEAL : "#e5e7eb", background: activeLocFilter === null ? `rgba(14,165,160,0.08)` : "transparent", color: activeLocFilter === null ? TEAL : "#9ca3af" }}>
+                  Все залы
+                </button>
+                {Object.entries(locationNames).map(([id, name]) => (
+                  <button key={id} onClick={() => setActiveLocFilter(activeLocFilter === Number(id) ? null : Number(id))}
+                    className="px-3 py-1.5 rounded-full text-xs font-medium transition-all border flex items-center gap-1.5"
+                    style={{
+                      borderColor: activeLocFilter === Number(id) ? LOCATION_COLORS[Number(id)] : "#e5e7eb",
+                      background: activeLocFilter === Number(id) ? `${LOCATION_COLORS[Number(id)]}14` : "transparent",
+                      color: activeLocFilter === Number(id) ? LOCATION_COLORS[Number(id)] : "#9ca3af",
+                    }}>
+                    <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: LOCATION_COLORS[Number(id)] }} />
+                    {name}
+                  </button>
+                ))}
+              </div>
+            </SectionReveal>
+
+            {/* Cards */}
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {dayItems.length === 0 && (
+                <div className="col-span-3 text-center py-16 text-muted-foreground text-sm">
+                  Занятий нет
+                </div>
+              )}
+              {dayItems.map((item, i) => {
+                const gym = gymRoomMap[item.location.id];
+                return (
+                  <SectionReveal key={item.id} delay={i * 60}>
+                    <div className="rounded-xl overflow-hidden shadow-sm group"
+                      style={{ border: `1px solid #e5e7eb`, background: "#fff" }}>
+                      {/* Colored top bar */}
+                      <div className="h-1" style={{ background: LOCATION_COLORS[item.location.id] }} />
+                      <div className="p-5">
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="text-xs font-semibold px-2.5 py-1 rounded-full"
+                            style={{ background: `${LOCATION_COLORS[item.location.id]}14`, color: LOCATION_COLORS[item.location.id] }}>
+                            {item.time}
+                          </span>
+                          <span className="text-xs text-muted-foreground">{item.location.name}</span>
+                        </div>
+                        <h3 className="text-base font-semibold text-foreground mb-4" style={{ fontFamily: "'Oswald', sans-serif" }}>
+                          {item.name.toUpperCase()}
+                        </h3>
+                        <div className="flex items-center justify-between">
+                          {/* Trainer link */}
+                          <button
+                            className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+                            onClick={() => {
+                              const t = trainers.find((tr) => tr.name === item.trainer.name);
+                              if (t) setSelectedTrainer(t);
+                            }}>
+                            <img src={item.trainer.img} alt={item.trainer.name}
+                              className="w-8 h-8 rounded-full object-cover flex-shrink-0"
+                              style={{ border: `2px solid ${LOCATION_COLORS[item.location.id]}` }} />
+                            <span className="text-xs text-foreground/70 text-left leading-tight">{item.trainer.name}</span>
+                          </button>
+                          {/* Gym link */}
+                          {gym && (
+                            <button
+                              className="flex items-center gap-1 text-xs transition-opacity hover:opacity-70"
+                              style={{ color: TEAL }}
+                              onClick={() => setSelectedGym(gym)}>
+                              <Icon name="MapPin" size={12} />
+                              <span>Зал</span>
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </SectionReveal>
+                );
+              })}
+            </div>
+          </section>
+        );
+      })()}
 
       {/* PLANS */}
       <section id="plans" className="py-28" style={{ background: "#f8fafa" }}>
