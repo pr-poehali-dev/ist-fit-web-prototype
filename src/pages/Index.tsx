@@ -571,39 +571,40 @@ export default function Index() {
 
         const LOCATION_COLORS: Record<number, string> = { 1: "#0ea5a0", 2: "#f59e0b", 3: "#8b5cf6" };
 
+        const T1 = { id: 1, name: "Андрей Лебедев", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/b265f983-b890-4a62-a6f5-8659494513c3.jpg" };
+        const T2 = { id: 2, name: "Кристина Орлова", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/bc180fed-e45c-4061-be08-e3b2de5a27d7.jpg" };
+        const T3 = { id: 3, name: "Михаил Дроздов", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/32451844-e9fb-4c86-ab75-580ff12cbef9.jpg" };
+        const L1 = { id: 1, name: "Тренажёрный зал" };
+        const L2 = { id: 2, name: "Кардио-зона" };
+        const L3 = { id: 3, name: "Зона персональных тренировок" };
+
         const schedule = [
-          { id: 1, time: "07:00–08:00", day: "ПН", name: "Утренний фитнес", trainer: { id: 2, name: "Кристина Орлова", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/bc180fed-e45c-4061-be08-e3b2de5a27d7.jpg" }, location: { id: 2, name: "Кардио-зона" } },
-          { id: 2, time: "09:00–10:30", day: "ПН", name: "Силовая тренировка", trainer: { id: 1, name: "Андрей Лебедев", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/b265f983-b890-4a62-a6f5-8659494513c3.jpg" }, location: { id: 1, name: "Тренажёрный зал" } },
-          { id: 3, time: "12:00–13:00", day: "ПН", name: "Кардио-сессия", trainer: { id: 3, name: "Михаил Дроздов", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/32451844-e9fb-4c86-ab75-580ff12cbef9.jpg" }, location: { id: 2, name: "Кардио-зона" } },
-          { id: 4, time: "18:00–19:30", day: "ПН", name: "Персональная тренировка", trainer: { id: 1, name: "Андрей Лебедев", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/b265f983-b890-4a62-a6f5-8659494513c3.jpg" }, location: { id: 3, name: "Зона персональных тренировок" } },
-          { id: 5, time: "20:00–21:00", day: "ПН", name: "Вечерний стретчинг", trainer: { id: 2, name: "Кристина Орлова", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/bc180fed-e45c-4061-be08-e3b2de5a27d7.jpg" }, location: { id: 3, name: "Зона персональных тренировок" } },
-          { id: 6, time: "07:00–08:00", day: "ВТ", name: "Утренний фитнес", trainer: { id: 2, name: "Кристина Орлова", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/bc180fed-e45c-4061-be08-e3b2de5a27d7.jpg" }, location: { id: 2, name: "Кардио-зона" } },
-          { id: 7, time: "10:00–11:30", day: "ВТ", name: "Функциональный тренинг", trainer: { id: 3, name: "Михаил Дроздов", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/32451844-e9fb-4c86-ab75-580ff12cbef9.jpg" }, location: { id: 1, name: "Тренажёрный зал" } },
-          { id: 8, time: "13:00–14:00", day: "ВТ", name: "Кардио-сессия", trainer: { id: 2, name: "Кристина Орлова", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/bc180fed-e45c-4061-be08-e3b2de5a27d7.jpg" }, location: { id: 2, name: "Кардио-зона" } },
-          { id: 9, time: "17:00–18:30", day: "ВТ", name: "Силовая тренировка", trainer: { id: 1, name: "Андрей Лебедев", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/b265f983-b890-4a62-a6f5-8659494513c3.jpg" }, location: { id: 1, name: "Тренажёрный зал" } },
-          { id: 10, time: "19:00–20:00", day: "ВТ", name: "Персональная тренировка", trainer: { id: 3, name: "Михаил Дроздов", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/32451844-e9fb-4c86-ab75-580ff12cbef9.jpg" }, location: { id: 3, name: "Зона персональных тренировок" } },
-          { id: 11, time: "07:00–08:00", day: "СР", name: "Утренний фитнес", trainer: { id: 2, name: "Кристина Орлова", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/bc180fed-e45c-4061-be08-e3b2de5a27d7.jpg" }, location: { id: 2, name: "Кардио-зона" } },
-          { id: 12, time: "09:00–10:30", day: "СР", name: "Силовая тренировка", trainer: { id: 3, name: "Михаил Дроздов", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/32451844-e9fb-4c86-ab75-580ff12cbef9.jpg" }, location: { id: 1, name: "Тренажёрный зал" } },
-          { id: 13, time: "11:00–12:00", day: "СР", name: "Кардио-сессия", trainer: { id: 2, name: "Кристина Орлова", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/bc180fed-e45c-4061-be08-e3b2de5a27d7.jpg" }, location: { id: 2, name: "Кардио-зона" } },
-          { id: 14, time: "18:00–19:30", day: "СР", name: "Функциональный тренинг", trainer: { id: 3, name: "Михаил Дроздов", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/32451844-e9fb-4c86-ab75-580ff12cbef9.jpg" }, location: { id: 1, name: "Тренажёрный зал" } },
-          { id: 15, time: "20:00–21:00", day: "СР", name: "Вечерний стретчинг", trainer: { id: 2, name: "Кристина Орлова", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/bc180fed-e45c-4061-be08-e3b2de5a27d7.jpg" }, location: { id: 3, name: "Зона персональных тренировок" } },
-          { id: 16, time: "07:00–08:00", day: "ЧТ", name: "Утренний фитнес", trainer: { id: 2, name: "Кристина Орлова", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/bc180fed-e45c-4061-be08-e3b2de5a27d7.jpg" }, location: { id: 2, name: "Кардио-зона" } },
-          { id: 17, time: "10:00–11:30", day: "ЧТ", name: "Силовая тренировка", trainer: { id: 1, name: "Андрей Лебедев", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/b265f983-b890-4a62-a6f5-8659494513c3.jpg" }, location: { id: 1, name: "Тренажёрный зал" } },
-          { id: 18, time: "12:00–13:00", day: "ЧТ", name: "Кардио-сессия", trainer: { id: 3, name: "Михаил Дроздов", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/32451844-e9fb-4c86-ab75-580ff12cbef9.jpg" }, location: { id: 2, name: "Кардио-зона" } },
-          { id: 19, time: "17:00–18:30", day: "ЧТ", name: "Функциональный тренинг", trainer: { id: 3, name: "Михаил Дроздов", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/32451844-e9fb-4c86-ab75-580ff12cbef9.jpg" }, location: { id: 1, name: "Тренажёрный зал" } },
-          { id: 20, time: "19:00–20:00", day: "ЧТ", name: "Персональная тренировка", trainer: { id: 1, name: "Андрей Лебедев", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/b265f983-b890-4a62-a6f5-8659494513c3.jpg" }, location: { id: 3, name: "Зона персональных тренировок" } },
-          { id: 21, time: "07:00–08:00", day: "ПТ", name: "Утренний фитнес", trainer: { id: 2, name: "Кристина Орлова", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/bc180fed-e45c-4061-be08-e3b2de5a27d7.jpg" }, location: { id: 2, name: "Кардио-зона" } },
-          { id: 22, time: "09:00–10:30", day: "ПТ", name: "Силовая тренировка", trainer: { id: 1, name: "Андрей Лебедев", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/b265f983-b890-4a62-a6f5-8659494513c3.jpg" }, location: { id: 1, name: "Тренажёрный зал" } },
-          { id: 23, time: "13:00–14:00", day: "ПТ", name: "Кардио-сессия", trainer: { id: 2, name: "Кристина Орлова", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/bc180fed-e45c-4061-be08-e3b2de5a27d7.jpg" }, location: { id: 2, name: "Кардио-зона" } },
-          { id: 24, time: "18:00–19:30", day: "ПТ", name: "Функциональный тренинг", trainer: { id: 3, name: "Михаил Дроздов", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/32451844-e9fb-4c86-ab75-580ff12cbef9.jpg" }, location: { id: 1, name: "Тренажёрный зал" } },
-          { id: 25, time: "20:00–21:00", day: "ПТ", name: "Вечерний стретчинг", trainer: { id: 2, name: "Кристина Орлова", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/bc180fed-e45c-4061-be08-e3b2de5a27d7.jpg" }, location: { id: 3, name: "Зона персональных тренировок" } },
-          { id: 26, time: "09:00–10:30", day: "СБ", name: "Силовая тренировка", trainer: { id: 1, name: "Андрей Лебедев", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/b265f983-b890-4a62-a6f5-8659494513c3.jpg" }, location: { id: 1, name: "Тренажёрный зал" } },
-          { id: 27, time: "10:00–11:00", day: "СБ", name: "Кардио-сессия", trainer: { id: 3, name: "Михаил Дроздов", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/32451844-e9fb-4c86-ab75-580ff12cbef9.jpg" }, location: { id: 2, name: "Кардио-зона" } },
-          { id: 28, time: "12:00–13:00", day: "СБ", name: "Функциональный тренинг", trainer: { id: 3, name: "Михаил Дроздов", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/32451844-e9fb-4c86-ab75-580ff12cbef9.jpg" }, location: { id: 1, name: "Тренажёрный зал" } },
-          { id: 29, time: "14:00–15:00", day: "СБ", name: "Персональная тренировка", trainer: { id: 1, name: "Андрей Лебедев", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/b265f983-b890-4a62-a6f5-8659494513c3.jpg" }, location: { id: 3, name: "Зона персональных тренировок" } },
-          { id: 30, time: "10:00–11:30", day: "ВС", name: "Силовая тренировка", trainer: { id: 3, name: "Михаил Дроздов", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/32451844-e9fb-4c86-ab75-580ff12cbef9.jpg" }, location: { id: 1, name: "Тренажёрный зал" } },
-          { id: 31, time: "11:00–12:00", day: "ВС", name: "Кардио-сессия", trainer: { id: 2, name: "Кристина Орлова", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/bc180fed-e45c-4061-be08-e3b2de5a27d7.jpg" }, location: { id: 2, name: "Кардио-зона" } },
-          { id: 32, time: "13:00–14:00", day: "ВС", name: "Вечерний стретчинг", trainer: { id: 2, name: "Кристина Орлова", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/bc180fed-e45c-4061-be08-e3b2de5a27d7.jpg" }, location: { id: 3, name: "Зона персональных тренировок" } },
+          { id: 1,  time: "10:00–11:30", day: "ПН", name: "Силовая тренировка",       trainer: T1, location: L1 },
+          { id: 2,  time: "13:00–14:00", day: "ПН", name: "Кардио-сессия",             trainer: T3, location: L2 },
+          { id: 3,  time: "17:00–18:30", day: "ПН", name: "Функциональный тренинг",    trainer: T3, location: L1 },
+          { id: 4,  time: "20:00–21:00", day: "ПН", name: "Вечерний стретчинг",        trainer: T2, location: L3 },
+          { id: 5,  time: "10:00–11:30", day: "ВТ", name: "Функциональный тренинг",    trainer: T3, location: L1 },
+          { id: 6,  time: "13:00–14:00", day: "ВТ", name: "Кардио-сессия",             trainer: T2, location: L2 },
+          { id: 7,  time: "17:00–18:30", day: "ВТ", name: "Силовая тренировка",        trainer: T1, location: L1 },
+          { id: 8,  time: "20:00–21:00", day: "ВТ", name: "Персональная тренировка",   trainer: T3, location: L3 },
+          { id: 9,  time: "10:00–11:30", day: "СР", name: "Силовая тренировка",        trainer: T3, location: L1 },
+          { id: 10, time: "13:00–14:00", day: "СР", name: "Кардио-сессия",             trainer: T2, location: L2 },
+          { id: 11, time: "17:00–18:30", day: "СР", name: "Функциональный тренинг",    trainer: T3, location: L1 },
+          { id: 12, time: "20:00–21:00", day: "СР", name: "Вечерний стретчинг",        trainer: T2, location: L3 },
+          { id: 13, time: "10:00–11:30", day: "ЧТ", name: "Силовая тренировка",        trainer: T1, location: L1 },
+          { id: 14, time: "13:00–14:00", day: "ЧТ", name: "Кардио-сессия",             trainer: T3, location: L2 },
+          { id: 15, time: "17:00–18:30", day: "ЧТ", name: "Функциональный тренинг",    trainer: T3, location: L1 },
+          { id: 16, time: "20:00–21:00", day: "ЧТ", name: "Персональная тренировка",   trainer: T1, location: L3 },
+          { id: 17, time: "10:00–11:30", day: "ПТ", name: "Силовая тренировка",        trainer: T1, location: L1 },
+          { id: 18, time: "13:00–14:00", day: "ПТ", name: "Кардио-сессия",             trainer: T2, location: L2 },
+          { id: 19, time: "17:00–18:30", day: "ПТ", name: "Функциональный тренинг",    trainer: T3, location: L1 },
+          { id: 20, time: "20:00–21:00", day: "ПТ", name: "Вечерний стретчинг",        trainer: T2, location: L3 },
+          { id: 21, time: "10:00–11:30", day: "СБ", name: "Силовая тренировка",        trainer: T1, location: L1 },
+          { id: 22, time: "13:00–14:00", day: "СБ", name: "Функциональный тренинг",    trainer: T3, location: L1 },
+          { id: 23, time: "17:00–18:30", day: "СБ", name: "Кардио-сессия",             trainer: T2, location: L2 },
+          { id: 24, time: "10:00–11:30", day: "ВС", name: "Силовая тренировка",        trainer: T3, location: L1 },
+          { id: 25, time: "13:00–14:00", day: "ВС", name: "Кардио-сессия",             trainer: T2, location: L2 },
+          { id: 26, time: "17:00–18:30", day: "ВС", name: "Вечерний стретчинг",        trainer: T2, location: L3 },
         ];
 
         const gymRoomMap: Record<number, typeof gymRooms[0]> = {
