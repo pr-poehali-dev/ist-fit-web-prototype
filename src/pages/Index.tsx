@@ -1,6 +1,9 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+
 import Icon from "@/components/ui/icon";
+
+const SCHEDULE_API = "https://functions.poehali.dev/8592c145-1632-4e9f-9a9f-62662ace2702";
 
 const HERO_IMG = "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/32451844-e9fb-4c86-ab75-580ff12cbef9.jpg";
 const TRAINER1_IMG = "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/b265f983-b890-4a62-a6f5-8659494513c3.jpg";
@@ -149,6 +152,21 @@ export default function Index() {
   const [selectedGym, setSelectedGym] = useState<GymRoom | null>(null);
   const [formData, setFormData] = useState({ name: "", phone: "", email: "", message: "" });
   const [formSent, setFormSent] = useState(false);
+
+  type ScheduleItem = { id: number; time: string; day: string; name: string; trainer_id: number; trainer_name: string; location_id: number; location_name: string };
+  const [scheduleData, setScheduleData] = useState<ScheduleItem[]>([]);
+
+  const fetchSchedule = useCallback(() => {
+    fetch(SCHEDULE_API)
+      .then((r) => r.json())
+      .then((data) => {
+        const raw = typeof data === "string" ? JSON.parse(data) : data;
+        setScheduleData(raw.schedule || []);
+      })
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => { fetchSchedule(); }, [fetchSchedule]);
 
 
   const navLinks = [
@@ -635,52 +653,16 @@ export default function Index() {
 
         const LOCATION_COLORS: Record<number, string> = { 1: "#0ea5a0", 2: "#f59e0b", 3: "#8b5cf6" };
 
-        const T1 = { id: 1, name: "Андрей Лебедев", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/b265f983-b890-4a62-a6f5-8659494513c3.jpg" };
-        const T2 = { id: 2, name: "Кристина Орлова", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/bc180fed-e45c-4061-be08-e3b2de5a27d7.jpg" };
-        const T3 = { id: 3, name: "Михаил Дроздов", img: "https://cdn.poehali.dev/projects/180daee3-014f-4c83-b93c-226a90ab52f5/files/32451844-e9fb-4c86-ab75-580ff12cbef9.jpg" };
-        const L1 = { id: 1, name: "Тренажёрный зал" };
-        const L2 = { id: 2, name: "Кардио-зона" };
-        const L3 = { id: 3, name: "Зона персональных тренировок" };
-
-        const schedule = [
-          { id: 1,  time: "10:00–11:30", day: "ПН", name: "Силовая тренировка",       trainer: T1, location: L1 },
-          { id: 2,  time: "13:00–14:00", day: "ПН", name: "Кардио-сессия",             trainer: T3, location: L2 },
-          { id: 3,  time: "17:00–18:30", day: "ПН", name: "Функциональный тренинг",    trainer: T3, location: L1 },
-          { id: 4,  time: "20:00–21:00", day: "ПН", name: "Вечерний стретчинг",        trainer: T2, location: L3 },
-          { id: 5,  time: "10:00–11:30", day: "ВТ", name: "Функциональный тренинг",    trainer: T3, location: L1 },
-          { id: 6,  time: "13:00–14:00", day: "ВТ", name: "Кардио-сессия",             trainer: T2, location: L2 },
-          { id: 7,  time: "17:00–18:30", day: "ВТ", name: "Силовая тренировка",        trainer: T1, location: L1 },
-          { id: 8,  time: "20:00–21:00", day: "ВТ", name: "Персональная тренировка",   trainer: T3, location: L3 },
-          { id: 9,  time: "10:00–11:30", day: "СР", name: "Силовая тренировка",        trainer: T3, location: L1 },
-          { id: 10, time: "13:00–14:00", day: "СР", name: "Кардио-сессия",             trainer: T2, location: L2 },
-          { id: 11, time: "17:00–18:30", day: "СР", name: "Функциональный тренинг",    trainer: T3, location: L1 },
-          { id: 12, time: "20:00–21:00", day: "СР", name: "Вечерний стретчинг",        trainer: T2, location: L3 },
-          { id: 13, time: "10:00–11:30", day: "ЧТ", name: "Силовая тренировка",        trainer: T1, location: L1 },
-          { id: 14, time: "13:00–14:00", day: "ЧТ", name: "Кардио-сессия",             trainer: T3, location: L2 },
-          { id: 15, time: "17:00–18:30", day: "ЧТ", name: "Функциональный тренинг",    trainer: T3, location: L1 },
-          { id: 16, time: "20:00–21:00", day: "ЧТ", name: "Персональная тренировка",   trainer: T1, location: L3 },
-          { id: 17, time: "10:00–11:30", day: "ПТ", name: "Силовая тренировка",        trainer: T1, location: L1 },
-          { id: 18, time: "13:00–14:00", day: "ПТ", name: "Кардио-сессия",             trainer: T2, location: L2 },
-          { id: 19, time: "17:00–18:30", day: "ПТ", name: "Функциональный тренинг",    trainer: T3, location: L1 },
-          { id: 20, time: "20:00–21:00", day: "ПТ", name: "Вечерний стретчинг",        trainer: T2, location: L3 },
-          { id: 21, time: "10:00–11:30", day: "СБ", name: "Силовая тренировка",        trainer: T1, location: L1 },
-          { id: 22, time: "13:00–14:00", day: "СБ", name: "Функциональный тренинг",    trainer: T3, location: L1 },
-          { id: 23, time: "17:00–18:30", day: "СБ", name: "Кардио-сессия",             trainer: T2, location: L2 },
-          { id: 24, time: "10:00–11:30", day: "ВС", name: "Силовая тренировка",        trainer: T3, location: L1 },
-          { id: 25, time: "13:00–14:00", day: "ВС", name: "Кардио-сессия",             trainer: T2, location: L2 },
-          { id: 26, time: "17:00–18:30", day: "ВС", name: "Вечерний стретчинг",        trainer: T2, location: L3 },
-        ];
-
         const gymRoomMap: Record<number, typeof gymRooms[0]> = {
           1: gymRooms[0],
           2: gymRooms[2],
           3: gymRooms[1],
         };
 
-        // Все уникальные временные слоты, отсортированные
+        const schedule = scheduleData;
+
         const allTimes = Array.from(new Set(schedule.map((s) => s.time))).sort((a, b) => a.localeCompare(b));
 
-        // Быстрый поиск: { "ПН|07:00–08:00": item }
         const cellMap: Record<string, typeof schedule[0]> = {};
         schedule.forEach((s) => { cellMap[`${s.day}|${s.time}`] = s; });
 
@@ -749,29 +731,29 @@ export default function Index() {
                         </td>
                         {DAYS.map((day) => {
                           const item = cellMap[`${day}|${time}`];
-                          const gym = item ? gymRoomMap[item.location.id] : null;
+                          const gym = item ? gymRoomMap[item.location_id] : null;
                           return (
                             <td key={day} className="px-2 py-2 text-center align-middle"
                               style={{ borderBottom: "1px solid #f3f4f6", borderRight: "1px solid #e5e7eb", minWidth: "100px" }}>
                               {item ? (
                                 <div className="rounded-lg px-2 py-2 text-left transition-all hover:scale-[1.02] cursor-default"
-                                  style={{ background: `${LOCATION_COLORS[item.location.id]}12`, borderLeft: `3px solid ${LOCATION_COLORS[item.location.id]}` }}>
+                                  style={{ background: `${LOCATION_COLORS[item.location_id]}12`, borderLeft: `3px solid ${LOCATION_COLORS[item.location_id]}` }}>
                                   <div className="text-xs font-semibold text-foreground leading-snug mb-1"
                                     style={{ fontFamily: "'Oswald', sans-serif" }}>
                                     {item.name}
                                   </div>
                                   <button
                                     className="text-xs leading-snug hover:underline block w-full text-left"
-                                    style={{ color: LOCATION_COLORS[item.location.id] }}
-                                    onClick={() => { const t = trainers.find((tr) => tr.name === item.trainer.name); if (t) setSelectedTrainer(t); }}>
-                                    {item.trainer.name}
+                                    style={{ color: LOCATION_COLORS[item.location_id] }}
+                                    onClick={() => { const t = trainers.find((tr) => tr.name === item.trainer_name); if (t) setSelectedTrainer(t); }}>
+                                    {item.trainer_name}
                                   </button>
                                   {gym && (
                                     <button
                                       className="text-xs leading-snug hover:underline block w-full text-left mt-0.5"
                                       style={{ color: "#9ca3af" }}
                                       onClick={() => setSelectedGym(gym)}>
-                                      {item.location.name}
+                                      {item.location_name}
                                     </button>
                                   )}
                                 </div>

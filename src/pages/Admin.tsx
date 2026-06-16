@@ -1,6 +1,190 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Icon from "@/components/ui/icon";
 import { useNavigate } from "react-router-dom";
+
+const SCHEDULE_API = "https://functions.poehali.dev/8592c145-1632-4e9f-9a9f-62662ace2702";
+
+type ScheduleItem = { id: number; time: string; day: string; name: string; trainer_id: number; trainer_name: string; location_id: number; location_name: string };
+type TrainerRef = { id: number; name: string };
+type LocationRef = { id: number; name: string };
+
+const DAYS = ["ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ", "ВС"];
+const LOCATION_COLORS: Record<number, string> = { 1: "#0ea5a0", 2: "#f59e0b", 3: "#8b5cf6" };
+
+const EMPTY_FORM = { time: "", day: "ПН", name: "", trainer_id: 0, location_id: 0 };
+
+function ScheduleTab() {
+  const [schedule, setSchedule] = useState<ScheduleItem[]>([]);
+  const [trainers, setTrainers] = useState<TrainerRef[]>([]);
+  const [locations, setLocations] = useState<LocationRef[]>([]);
+  const [editItem, setEditItem] = useState<ScheduleItem | null>(null);
+  const [form, setForm] = useState<typeof EMPTY_FORM>(EMPTY_FORM);
+  const [showForm, setShowForm] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  const load = useCallback(() => {
+    fetch(SCHEDULE_API)
+      .then((r) => r.json())
+      .then((data) => {
+        const raw = typeof data === "string" ? JSON.parse(data) : data;
+        setSchedule(raw.schedule || []);
+        setTrainers(raw.trainers || []);
+        setLocations(raw.locations || []);
+      });
+  }, []);
+
+  useEffect(() => { load(); }, [load]);
+
+  const openAdd = () => {
+    setEditItem(null);
+    setForm({ ...EMPTY_FORM, trainer_id: trainers[0]?.id || 0, location_id: locations[0]?.id || 0 });
+    setShowForm(true);
+  };
+
+  const openEdit = (item: ScheduleItem) => {
+    setEditItem(item);
+    setForm({ time: item.time, day: item.day, name: item.name, trainer_id: item.trainer_id, location_id: item.location_id });
+    setShowForm(true);
+  };
+
+  const save = async () => {
+    if (!form.name || !form.time || !form.trainer_id || !form.location_id) return;
+    setSaving(true);
+    const method = editItem ? "PUT" : "POST";
+    const body = editItem ? { ...form, id: editItem.id } : form;
+    await fetch(SCHEDULE_API, { method, headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    setSaving(false);
+    setShowForm(false);
+    load();
+  };
+
+  const remove = async (id: number) => {
+    if (!confirm("Удалить занятие?")) return;
+    await fetch(SCHEDULE_API, { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id }) });
+    load();
+  };
+
+  const byDay = DAYS.reduce<Record<string, ScheduleItem[]>>((acc, d) => {
+    acc[d] = schedule.filter((s) => s.day === d).sort((a, b) => a.time.localeCompare(b.time));
+    return acc;
+  }, {});
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-lg font-semibold text-foreground" style={{ fontFamily: "'Oswald', sans-serif" }}>Расписание тренировок</h2>
+        <button onClick={openAdd}
+          className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-white transition-all hover:opacity-90"
+          style={{ background: TEAL }}>
+          <Icon name="Plus" size={15} />
+          Добавить занятие
+        </button>
+      </div>
+
+      {/* Grid by days */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        {DAYS.map((day) => (
+          <div key={day} className="rounded-xl overflow-hidden" style={{ border: "1px solid #e5e7eb", background: "#fff" }}>
+            <div className="px-4 py-3 text-xs font-semibold uppercase tracking-widest" style={{ background: "#f9fafb", borderBottom: "1px solid #e5e7eb", color: day === "СБ" || day === "ВС" ? TEAL : "#374151", fontFamily: "'Oswald', sans-serif" }}>
+              {day}
+            </div>
+            <div className="p-2 space-y-2 min-h-[80px]">
+              {byDay[day].length === 0 && (
+                <div className="text-xs text-muted-foreground/40 text-center py-4">нет занятий</div>
+              )}
+              {byDay[day].map((item) => (
+                <div key={item.id} className="rounded-lg px-3 py-2 group relative"
+                  style={{ background: `${LOCATION_COLORS[item.location_id]}10`, borderLeft: `3px solid ${LOCATION_COLORS[item.location_id]}` }}>
+                  <div className="text-[10px] text-muted-foreground mb-0.5">{item.time}</div>
+                  <div className="text-xs font-semibold text-foreground leading-snug" style={{ fontFamily: "'Oswald', sans-serif" }}>{item.name}</div>
+                  <div className="text-[10px] text-muted-foreground mt-0.5">{item.trainer_name} · {item.location_name}</div>
+                  <div className="absolute top-2 right-2 hidden group-hover:flex gap-1">
+                    <button onClick={() => openEdit(item)} className="p-1 rounded hover:bg-gray-100 transition-colors">
+                      <Icon name="Pencil" size={11} style={{ color: "#6b7280" }} />
+                    </button>
+                    <button onClick={() => remove(item.id)} className="p-1 rounded hover:bg-red-50 transition-colors">
+                      <Icon name="Trash2" size={11} style={{ color: "#ef4444" }} />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Modal form */}
+      {showForm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: "rgba(0,0,0,0.35)" }}>
+          <div className="rounded-2xl p-6 w-full max-w-md shadow-2xl" style={{ background: "#fff" }}>
+            <div className="flex items-center justify-between mb-5">
+              <h3 className="font-semibold text-foreground" style={{ fontFamily: "'Oswald', sans-serif" }}>
+                {editItem ? "Редактировать занятие" : "Новое занятие"}
+              </h3>
+              <button onClick={() => setShowForm(false)} className="text-muted-foreground hover:text-foreground">
+                <Icon name="X" size={16} />
+              </button>
+            </div>
+            <div className="space-y-4">
+              <div>
+                <label className="text-xs text-muted-foreground mb-1 block">Название занятия</label>
+                <input value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+                  placeholder="Силовая тренировка"
+                  className="w-full px-3 py-2 rounded-lg text-sm outline-none focus:ring-2"
+                  style={{ border: "1px solid #e5e7eb", focusRingColor: TEAL }} />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs text-muted-foreground mb-1 block">День</label>
+                  <select value={form.day} onChange={(e) => setForm((f) => ({ ...f, day: e.target.value }))}
+                    className="w-full px-3 py-2 rounded-lg text-sm outline-none"
+                    style={{ border: "1px solid #e5e7eb" }}>
+                    {DAYS.map((d) => <option key={d} value={d}>{d}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="text-xs text-muted-foreground mb-1 block">Время</label>
+                  <input value={form.time} onChange={(e) => setForm((f) => ({ ...f, time: e.target.value }))}
+                    placeholder="10:00–11:30"
+                    className="w-full px-3 py-2 rounded-lg text-sm outline-none"
+                    style={{ border: "1px solid #e5e7eb" }} />
+                </div>
+              </div>
+              <div>
+                <label className="text-xs text-muted-foreground mb-1 block">Тренер</label>
+                <select value={form.trainer_id} onChange={(e) => setForm((f) => ({ ...f, trainer_id: Number(e.target.value) }))}
+                  className="w-full px-3 py-2 rounded-lg text-sm outline-none"
+                  style={{ border: "1px solid #e5e7eb" }}>
+                  {trainers.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="text-xs text-muted-foreground mb-1 block">Зал</label>
+                <select value={form.location_id} onChange={(e) => setForm((f) => ({ ...f, location_id: Number(e.target.value) }))}
+                  className="w-full px-3 py-2 rounded-lg text-sm outline-none"
+                  style={{ border: "1px solid #e5e7eb" }}>
+                  {locations.map((l) => <option key={l.id} value={l.id}>{l.name}</option>)}
+                </select>
+              </div>
+            </div>
+            <div className="flex gap-3 mt-6">
+              <button onClick={() => setShowForm(false)}
+                className="flex-1 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors"
+                style={{ border: "1px solid #e5e7eb", color: "#6b7280" }}>
+                Отмена
+              </button>
+              <button onClick={save} disabled={saving}
+                className="flex-1 px-4 py-2.5 rounded-lg text-sm font-medium text-white transition-all hover:opacity-90 disabled:opacity-50"
+                style={{ background: TEAL }}>
+                {saving ? "Сохранение..." : "Сохранить"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
 const TEAL = "#0ea5a0";
 
@@ -65,6 +249,7 @@ function formatDate(iso: string) {
 
 export default function Admin() {
   const navigate = useNavigate();
+  const [tab, setTab] = useState<"leads" | "schedule">("leads");
   const [leads, setLeads] = useState<Lead[]>([]);
   const [selected, setSelected] = useState<Lead | null>(null);
   const [filterStatus, setFilterStatus] = useState<LeadStatus | "all">("all");
@@ -107,16 +292,29 @@ export default function Admin() {
             </span>
             <span className="text-sm text-muted-foreground">/ Личный кабинет</span>
           </div>
-          {counts.new > 0 && (
-            <div className="flex items-center gap-2 text-sm px-3 py-1.5 rounded-full" style={{ background: "rgba(239,68,68,0.08)", color: "#ef4444" }}>
-              <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-              {counts.new} новых заявок
-            </div>
-          )}
+          <div className="flex items-center gap-1">
+            {([["leads", "Заявки", "Inbox"], ["schedule", "Расписание", "CalendarDays"]] as const).map(([key, label, icon]) => (
+              <button key={key} onClick={() => setTab(key)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm transition-all"
+                style={{
+                  background: tab === key ? `${TEAL}12` : "transparent",
+                  color: tab === key ? TEAL : "#6b7280",
+                  fontWeight: tab === key ? 600 : 400,
+                }}>
+                <Icon name={icon} size={14} />
+                {label}
+                {key === "leads" && counts.new > 0 && (
+                  <span className="w-4 h-4 rounded-full text-[10px] flex items-center justify-center text-white" style={{ background: "#ef4444" }}>{counts.new}</span>
+                )}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-6 py-8">
+        {tab === "schedule" && <ScheduleTab />}
+        {tab === "leads" && <>
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {([["all", "Всего", "#6b7280"], ["new", "Новые", "#ef4444"], ["processing", "В работе", "#f59e0b"], ["done", "Обработаны", "#22c55e"]] as const).map(([key, label, color]) => (
@@ -225,6 +423,7 @@ export default function Admin() {
             </div>
           )}
         </div>
+        </>}
       </div>
     </div>
   );
