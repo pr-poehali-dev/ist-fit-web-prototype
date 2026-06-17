@@ -1,6 +1,36 @@
 import { useNavigate } from "react-router-dom";
 import Icon from "@/components/ui/icon";
 
+function downloadSvgAsPng(containerId: string, filename: string) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  const svgEl = container.querySelector("svg");
+  if (!svgEl) return;
+  const w = svgEl.width.baseVal.value || 800;
+  const h = svgEl.height.baseVal.value || 600;
+  const scale = 2;
+  const xml = new XMLSerializer().serializeToString(svgEl);
+  const blob = new Blob([xml], { type: "image/svg+xml;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const img = new Image();
+  img.onload = () => {
+    const canvas = document.createElement("canvas");
+    canvas.width = w * scale;
+    canvas.height = h * scale;
+    const ctx = canvas.getContext("2d")!;
+    ctx.scale(scale, scale);
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, w, h);
+    ctx.drawImage(img, 0, 0);
+    URL.revokeObjectURL(url);
+    const a = document.createElement("a");
+    a.download = filename;
+    a.href = canvas.toDataURL("image/png");
+    a.click();
+  };
+  img.src = url;
+}
+
 const FONT = "'Golos Text', sans-serif";
 const BLOCK_FILL = "#ffffff";
 const BLOCK_STROKE = "#1a1a1a";
@@ -463,36 +493,40 @@ const DIAGRAMS = [
     title: "Диаграмма первого уровня (A0)",
     desc: "На сайт поступают данные от пользователя. Обработчики: React + Tailwind CSS на стороне клиента, Python — на стороне сервера, SQL — при работе с PostgreSQL. Результат — интерфейс сайта и отчётность.",
     component: <DiagramA0 />,
-    w: 620,
+    id: "diagram-a0",
+    file: "idef0-a0.png",
   },
   {
     num: "Рис. 11",
     title: "Диаграмма второго уровня (A1–A3)",
     desc: "A1 — авторизация, A2 — определение типа пользователя, A3 — взаимодействие с сайтом.",
     component: <DiagramA1A3 />,
-    w: 900,
+    id: "diagram-a1a3",
+    file: "idef0-a1-a3.png",
   },
   {
     num: "Рис. 12",
     title: "Диаграмма третьего уровня. Детализация блока A1",
     desc: "A11 — ввод логина и пароля в форму React, A12 — проверка корректности Python-функцией, A13 — отправка HTTP-запроса на сервер.",
     component: <DiagramA11A13 />,
-    w: 860,
+    id: "diagram-a11a13",
+    file: "idef0-a11-a13.png",
   },
   {
     num: "Рис. 13",
     title: "Диаграмма третьего уровня. Детализация блока A2",
     desc: "A21 — поиск пользователя в PostgreSQL через psycopg2, A22 — определение роли, A23 — формирование интерфейса React.",
     component: <DiagramA21A23 />,
-    w: 900,
+    id: "diagram-a21a23",
+    file: "idef0-a21-a23.png",
   },
   {
     num: "Рис. 14",
     title: "Диаграмма третьего уровня. Детализация блока A3",
     desc: "A31 — инициализация изменений, A32 — валидация Python, A33 — обновление PostgreSQL, A34 — обновление интерфейса React.",
     component: <DiagramA31A34 />,
-    w: 1060,
-    section: "",
+    id: "diagram-a31a34",
+    file: "idef0-a31-a34.png",
   },
 ];
 
@@ -523,12 +557,21 @@ export default function Idef0() {
 
         {DIAGRAMS.map((d) => (
           <div key={d.num} className="space-y-3">
-            <div>
-              <p className="text-xs text-muted-foreground uppercase tracking-wide">{d.num}</p>
-              <h2 className="text-lg font-semibold">{d.title}</h2>
-              <p className="text-sm text-muted-foreground mt-0.5">{d.desc}</p>
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-xs text-muted-foreground uppercase tracking-wide">{d.num}</p>
+                <h2 className="text-lg font-semibold">{d.title}</h2>
+                {d.desc && <p className="text-sm text-muted-foreground mt-0.5">{d.desc}</p>}
+              </div>
+              <button
+                onClick={() => downloadSvgAsPng(d.id, d.file)}
+                className="flex items-center gap-1.5 shrink-0 text-xs px-3 py-1.5 rounded-md border border-gray-200 bg-white hover:bg-gray-50 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <Icon name="Download" size={13} />
+                Скачать PNG
+              </button>
             </div>
-            <div className="overflow-x-auto bg-white border border-gray-200 rounded-lg p-6">
+            <div id={d.id} className="overflow-x-auto bg-white border border-gray-200 rounded-lg p-6">
               {d.component}
             </div>
           </div>
@@ -541,11 +584,20 @@ export default function Idef0() {
         </div>
 
         <div className="space-y-3">
-          <div>
-            <p className="text-xs text-muted-foreground uppercase tracking-wide">Рис. 15</p>
-            <h2 className="text-lg font-semibold">Модель информационных потоков разрабатываемой ИС</h2>
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <p className="text-xs text-muted-foreground uppercase tracking-wide">Рис. 15</p>
+              <h2 className="text-lg font-semibold">Модель информационных потоков разрабатываемой ИС</h2>
+            </div>
+            <button
+              onClick={() => downloadSvgAsPng("diagram-dfd", "dfd-diagram.png")}
+              className="flex items-center gap-1.5 shrink-0 text-xs px-3 py-1.5 rounded-md border border-gray-200 bg-white hover:bg-gray-50 text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <Icon name="Download" size={13} />
+              Скачать PNG
+            </button>
           </div>
-          <div className="overflow-x-auto bg-white border border-gray-200 rounded-lg p-6">
+          <div id="diagram-dfd" className="overflow-x-auto bg-white border border-gray-200 rounded-lg p-6">
             <DiagramDFD />
           </div>
         </div>
