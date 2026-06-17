@@ -104,58 +104,71 @@ function DiagramA0() {
    ════════════════════════════════ */
 function DiagramA1A3() {
   return (
-    <svg width={900} height={420} style={{ display: "block" }}>
-      {/* ── A1 ── */}
-      <Block x={40} y={120} w={160} h={90} label={"Авторизация\nпользователя"} code="A1" />
-      <Arrow x1={0} y1={165} x2={40} y2={165} label="Данные" labelX={2} labelY={158} labelAnchor="start" />
-      <Arrow x1={120} y1={50} x2={120} y2={120} />
-      <Label x={120} y={44} text="Пользователь" />
-      <Arrow x1={190} y1={30} x2={190} y2={120} />
-      <Label x={190} y={18} text="HTTP / REST" multiline={["HTTP / REST", "протоколы"]} />
-      {/* механизмы A1 */}
-      <Arrow x1={70} y1={320} x2={70} y2={210} />
-      <Label x={70} y={336} text="React," multiline={["React,", "Tailwind"]} />
-      <Arrow x1={140} y1={320} x2={140} y2={210} />
-      <Label x={140} y={336} text="Python" />
+    <svg width={980} height={460} style={{ display: "block" }}>
+      {/* ── Общая шина сверху: HTTP/REST ── */}
+      <line x1={160} y1={40} x2={800} y2={40} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      <text x={460} y={32} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">HTTP / REST протоколы</text>
+      {/* ответвления вниз */}
+      <line x1={160} y1={40} x2={160} y2={140} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      <line x1={420} y1={40} x2={420} y2={175} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      <line x1={800} y1={40} x2={800} y2={175} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
 
-      {/* A1 → A2 */}
-      <Arrow x1={200} y1={165} x2={300} y2={200} label="Данные" labelX={215} labelY={168} labelAnchor="start" />
-      <Label x={215} y={178} text="пользователя" anchor="start" />
+      {/* ── Пользователь → A1 ── */}
+      <text x={100} y={58} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">Пользователь</text>
+      <line x1={100} y1={62} x2={100} y2={140} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+
+      {/* ── A1 ── */}
+      <Block x={30} y={140} w={180} h={90} label={"Авторизация\nпользователя"} code="A1" />
+      {/* Вход: Данные */}
+      <line x1={0} y1={185} x2={30} y2={185} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      <text x={2} y={178} textAnchor="start" fontSize={11} fontFamily={FONT} fill="#222">Данные</text>
+      {/* Механизмы A1 */}
+      <line x1={80} y1={390} x2={80} y2={230} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      <text x={80} y={406} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">React /</text>
+      <text x={80} y={420} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">Tailwind</text>
+      <line x1={150} y1={390} x2={150} y2={230} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      <text x={150} y={406} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">Python</text>
+
+      {/* A1 → A2: Данные пользователя */}
+      <line x1={210} y1={185} x2={310} y2={210} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      <text x={215} y={185} textAnchor="start" fontSize={11} fontFamily={FONT} fill="#222">Данные</text>
+      <text x={215} y={198} textAnchor="start" fontSize={11} fontFamily={FONT} fill="#222">пользователя</text>
 
       {/* ── A2 ── */}
-      <Block x={300} y={160} w={170} h={90} label={"Определение типа\nпользователя"} code="A2" />
-      {/* сетевые протоколы общая линия сверху */}
-      <ArrowPath d="M 190 30 L 730 30 L 730 120" label="" />
-      <Arrow x1={385} y1={30} x2={385} y2={160} />
-      {/* механизмы A2 */}
-      <Arrow x1={330} y1={340} x2={330} y2={250} />
-      <Label x={330} y={356} text="SQL" />
-      <Arrow x1={385} y1={340} x2={385} y2={250} />
-      <Label x={385} y={356} text="Python" />
-      <Arrow x1={445} y1={340} x2={445} y2={250} />
-      <Label x={445} y={350} text="React," multiline={["React,", "Tailwind"]} />
+      <Block x={310} y={175} w={190} h={90} label={"Определение типа\nпользователя"} code="A2" />
+      {/* Механизмы A2 */}
+      <line x1={355} y1={390} x2={355} y2={265} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      <text x={355} y={406} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">SQL</text>
+      <line x1={405} y1={390} x2={405} y2={265} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      <text x={405} y={406} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">Python</text>
+      <line x1={460} y1={390} x2={460} y2={265} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      <text x={460} y={406} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">React /</text>
+      <text x={460} y={420} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">Tailwind</text>
 
-      {/* A2 → A3 */}
-      <Arrow x1={470} y1={205} x2={570} y2={205} />
-      <Label x={475} y={198} text="Интерфейс" anchor="start" />
-      <Label x={475} y={210} text="конкретного" anchor="start" />
-      <Label x={475} y={222} text="пользователя" anchor="start" />
+      {/* A2 → A3: Интерфейс конкретного пользователя */}
+      <line x1={500} y1={220} x2={590} y2={220} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      <text x={504} y={212} textAnchor="start" fontSize={11} fontFamily={FONT} fill="#222">Интерфейс</text>
+      <text x={504} y={224} textAnchor="start" fontSize={11} fontFamily={FONT} fill="#222">конкретного</text>
+      <text x={504} y={236} textAnchor="start" fontSize={11} fontFamily={FONT} fill="#222">пользователя</text>
+
+      {/* ── Пользователь → A3 ── */}
+      <text x={800} y={160} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">Пользователь</text>
 
       {/* ── A3 ── */}
-      <Block x={570} y={160} w={180} h={110} label={"Взаимодействие\nпользователя\nс сайтом"} code="A3" />
-      {/* Пользователь → A3 (сверху, общая линия) */}
-      <Arrow x1={730} y1={120} x2={730} y2={160} />
-      <Label x={740} y={145} text="Пользователь" anchor="start" />
-      {/* выходы */}
-      <Arrow x1={750} y1={195} x2={890} y2={195} label="Интерфейс сайта" labelX={755} labelY={188} labelAnchor="start" />
-      <Arrow x1={750} y1={240} x2={890} y2={240} label="Отчётность" labelX={755} labelY={233} labelAnchor="start" />
-      {/* механизмы A3 */}
-      <Arrow x1={600} y1={340} x2={600} y2={270} />
-      <Label x={600} y={356} text="SQL" />
-      <Arrow x1={660} y1={340} x2={660} y2={270} />
-      <Label x={660} y={356} text="Python" />
-      <Arrow x1={720} y1={340} x2={720} y2={270} />
-      <Label x={720} y={350} text="React," multiline={["React,", "Tailwind"]} />
+      <Block x={590} y={175} w={200} h={110} label={"Взаимодействие\nпользователя\nс сайтом"} code="A3" />
+      {/* Выходы */}
+      <line x1={790} y1={210} x2={960} y2={210} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      <text x={795} y={203} textAnchor="start" fontSize={11} fontFamily={FONT} fill="#222">Интерфейс сайта</text>
+      <line x1={790} y1={255} x2={960} y2={255} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      <text x={795} y={248} textAnchor="start" fontSize={11} fontFamily={FONT} fill="#222">Отчётность</text>
+      {/* Механизмы A3 */}
+      <line x1={640} y1={390} x2={640} y2={285} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      <text x={640} y={406} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">SQL</text>
+      <line x1={690} y1={390} x2={690} y2={285} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      <text x={690} y={406} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">Python</text>
+      <line x1={750} y1={390} x2={750} y2={285} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      <text x={750} y={406} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">React /</text>
+      <text x={750} y={420} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">Tailwind</text>
     </svg>
   );
 }
@@ -165,44 +178,49 @@ function DiagramA1A3() {
    ════════════════════════════════ */
 function DiagramA11A13() {
   return (
-    <svg width={860} height={320} style={{ display: "block" }}>
-      {/* A11 */}
-      <Block x={40} y={100} w={160} h={90} label={"Ввод логина\nи пароля"} code="A11" />
-      <Arrow x1={0} y1={145} x2={40} y2={145} label="Данные" labelX={2} labelY={138} labelAnchor="start" />
-      <Arrow x1={120} y1={30} x2={120} y2={100} />
-      <Label x={120} y={24} text="Пользователь" />
-      {/* механизм A11 */}
-      <Arrow x1={100} y1={280} x2={100} y2={190} />
-      <Label x={100} y={296} text="React," multiline={["React,", "Tailwind"]} />
+    <svg width={920} height={370} style={{ display: "block" }}>
+      {/* ── A11 ── */}
+      <Block x={30} y={110} w={175} h={90} label={"Ввод логина\nи пароля"} code="A11" />
+      {/* Вход: Данные */}
+      <line x1={0} y1={155} x2={30} y2={155} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      <text x={2} y={148} textAnchor="start" fontSize={11} fontFamily={FONT} fill="#222">Данные</text>
+      {/* Пользователь сверху */}
+      <text x={117} y={70} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">Пользователь</text>
+      <line x1={117} y1={74} x2={117} y2={110} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      {/* Механизм A11 */}
+      <line x1={100} y1={320} x2={100} y2={200} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      <text x={100} y={336} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">React /</text>
+      <text x={100} y={350} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">Tailwind</text>
 
       {/* A11 → A12 */}
-      <Arrow x1={200} y1={145} x2={300} y2={145} />
-      <Label x={210} y={138} text="Данные" anchor="start" />
-      <Label x={210} y={150} text="пользователя" anchor="start" />
+      <line x1={205} y1={155} x2={310} y2={155} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      <text x={212} y={148} textAnchor="start" fontSize={11} fontFamily={FONT} fill="#222">Данные</text>
+      <text x={212} y={161} textAnchor="start" fontSize={11} fontFamily={FONT} fill="#222">пользователя</text>
 
-      {/* A12 */}
-      <Block x={300} y={100} w={180} h={90} label={"Проверка\nкорректности\nданных"} code="A12" />
-      {/* механизм A12 */}
-      <Arrow x1={390} y1={280} x2={390} y2={190} />
-      <Label x={390} y={296} text="Python" />
+      {/* ── A12 ── */}
+      <Block x={310} y={110} w={185} h={90} label={"Проверка\nкорректности\nданных"} code="A12" />
+      {/* Механизм A12 */}
+      <line x1={402} y1={320} x2={402} y2={200} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      <text x={402} y={336} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">Python</text>
 
       {/* A12 → A13 */}
-      <Arrow x1={480} y1={145} x2={570} y2={145} />
-      <Label x={490} y={138} text="Данные" anchor="start" />
-      <Label x={490} y={150} text="пользователя" anchor="start" />
+      <line x1={495} y1={155} x2={590} y2={155} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      <text x={500} y={148} textAnchor="start" fontSize={11} fontFamily={FONT} fill="#222">Данные</text>
+      <text x={500} y={161} textAnchor="start" fontSize={11} fontFamily={FONT} fill="#222">пользователя</text>
 
-      {/* A13 */}
-      <Block x={570} y={100} w={200} h={90} label={"Отправка данных\nпользователя\nна сервер"} code="A13" />
-      {/* Сетевые протоколы */}
-      <Arrow x1={670} y1={30} x2={670} y2={100} />
-      <Label x={670} y={18} text="HTTP / REST" multiline={["HTTP / REST", "протоколы"]} />
-      {/* механизм A13 */}
-      <Arrow x1={650} y1={280} x2={650} y2={190} />
-      <Label x={650} y={296} text="Python" />
-      {/* выход */}
-      <Arrow x1={770} y1={145} x2={860} y2={145} />
-      <Label x={775} y={138} text="Данные" anchor="start" />
-      <Label x={775} y={150} text="пользователя" anchor="start" />
+      {/* ── A13 ── */}
+      <Block x={590} y={110} w={200} h={90} label={"Отправка данных\nпользователя\nна сервер"} code="A13" />
+      {/* HTTP/REST сверху */}
+      <text x={690} y={68} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">HTTP / REST</text>
+      <text x={690} y={82} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">протоколы</text>
+      <line x1={690} y1={86} x2={690} y2={110} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      {/* Механизм A13 */}
+      <line x1={670} y1={320} x2={670} y2={200} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      <text x={670} y={336} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">Python</text>
+      {/* Выход */}
+      <line x1={790} y1={155} x2={920} y2={155} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      <text x={795} y={148} textAnchor="start" fontSize={11} fontFamily={FONT} fill="#222">Данные</text>
+      <text x={795} y={161} textAnchor="start" fontSize={11} fontFamily={FONT} fill="#222">пользователя</text>
     </svg>
   );
 }
@@ -212,52 +230,58 @@ function DiagramA11A13() {
    ════════════════════════════════ */
 function DiagramA21A23() {
   return (
-    <svg width={900} height={320} style={{ display: "block" }}>
-      {/* A21 */}
-      <Block x={40} y={100} w={185} h={90} label={"Поиск пользователя\nв БД по логину\nи паролю"} code="A21" />
-      <Arrow x1={0} y1={145} x2={40} y2={145} />
-      <Label x={2} y={138} text="Данные" anchor="start" />
-      <Label x={2} y={150} text="пользователя" anchor="start" />
-      {/* механизм A21 */}
-      <Arrow x1={120} y1={280} x2={120} y2={190} />
-      <Label x={120} y={296} text="SQL /" multiline={["SQL /", "psycopg2"]} />
+    <svg width={980} height={390} style={{ display: "block" }}>
+      {/* ── A21 ── */}
+      <Block x={30} y={120} w={185} h={90} label={"Поиск пользователя\nв БД по логину\nи паролю"} code="A21" />
+      {/* Вход */}
+      <line x1={0} y1={165} x2={30} y2={165} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      <text x={2} y={158} textAnchor="start" fontSize={11} fontFamily={FONT} fill="#222">Данные</text>
+      <text x={2} y={171} textAnchor="start" fontSize={11} fontFamily={FONT} fill="#222">пользователя</text>
+      {/* Механизм A21 */}
+      <line x1={122} y1={340} x2={122} y2={210} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      <text x={122} y={356} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">SQL /</text>
+      <text x={122} y={370} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">psycopg2</text>
 
       {/* A21 → A22 */}
-      <Arrow x1={225} y1={145} x2={320} y2={145} />
-      <Label x={230} y={138} text="Данные о" anchor="start" />
-      <Label x={230} y={150} text="пользователе" anchor="start" />
+      <line x1={215} y1={165} x2={320} y2={165} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      <text x={220} y={158} textAnchor="start" fontSize={11} fontFamily={FONT} fill="#222">Данные о</text>
+      <text x={220} y={171} textAnchor="start" fontSize={11} fontFamily={FONT} fill="#222">пользователе</text>
 
-      {/* A22 */}
-      <Block x={320} y={100} w={185} h={90} label={"Определение типа\nнайденного\nпользователя"} code="A22" />
-      {/* Сетевые протоколы → A22 */}
-      <Arrow x1={412} y1={30} x2={412} y2={100} />
-      <Label x={412} y={18} text="HTTP / REST" multiline={["HTTP / REST", "протоколы"]} />
-      {/* механизм A22 */}
-      <Arrow x1={412} y1={280} x2={412} y2={190} />
-      <Label x={412} y={296} text="SQL /" multiline={["SQL /", "psycopg2"]} />
+      {/* ── A22 ── */}
+      <Block x={320} y={120} w={185} h={90} label={"Определение типа\nнайденного\nпользователя"} code="A22" />
+      {/* HTTP/REST → A22 */}
+      <text x={412} y={72} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">HTTP / REST</text>
+      <text x={412} y={86} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">протоколы</text>
+      <line x1={412} y1={90} x2={412} y2={120} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      {/* Механизм A22 */}
+      <line x1={412} y1={340} x2={412} y2={210} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      <text x={412} y={356} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">SQL /</text>
+      <text x={412} y={370} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">psycopg2</text>
 
       {/* A22 → A23 */}
-      <Arrow x1={505} y1={145} x2={590} y2={145} />
-      <Label x={510} y={138} text="Тип" anchor="start" />
-      <Label x={510} y={150} text="пользователя" anchor="start" />
+      <line x1={505} y1={165} x2={600} y2={165} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      <text x={510} y={158} textAnchor="start" fontSize={11} fontFamily={FONT} fill="#222">Тип</text>
+      <text x={510} y={171} textAnchor="start" fontSize={11} fontFamily={FONT} fill="#222">пользователя</text>
 
-      {/* A23 */}
-      <Block x={590} y={100} w={200} h={90} label={"Формирование\nинтерфейса для\nтипа пользователя"} code="A23" />
-      {/* Сетевые протоколы → A23 */}
-      <Arrow x1={720} y1={30} x2={720} y2={100} />
-      <Label x={720} y={18} text="HTTP / REST" multiline={["HTTP / REST", "протоколы"]} />
-      {/* механизмы A23 */}
-      <Arrow x1={620} y1={280} x2={620} y2={190} />
-      <Label x={620} y={296} text="SQL" />
-      <Arrow x1={690} y1={280} x2={690} y2={190} />
-      <Label x={690} y={296} text="Python" />
-      <Arrow x1={760} y1={280} x2={760} y2={190} />
-      <Label x={760} y={290} text="React," multiline={["React,", "Tailwind"]} />
-      {/* выход */}
-      <Arrow x1={790} y1={145} x2={900} y2={145} />
-      <Label x={795} y={134} text="Интерфейс" anchor="start" />
-      <Label x={795} y={146} text="конкретного" anchor="start" />
-      <Label x={795} y={158} text="пользователя" anchor="start" />
+      {/* ── A23 ── */}
+      <Block x={600} y={120} w={200} h={90} label={"Формирование\nинтерфейса для\nтипа пользователя"} code="A23" />
+      {/* HTTP/REST → A23 */}
+      <text x={740} y={72} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">HTTP / REST</text>
+      <text x={740} y={86} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">протоколы</text>
+      <line x1={740} y1={90} x2={740} y2={120} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      {/* Механизмы A23 */}
+      <line x1={630} y1={340} x2={630} y2={210} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      <text x={630} y={356} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">SQL</text>
+      <line x1={700} y1={340} x2={700} y2={210} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      <text x={700} y={356} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">Python</text>
+      <line x1={768} y1={340} x2={768} y2={210} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      <text x={768} y={356} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">React /</text>
+      <text x={768} y={370} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">Tailwind</text>
+      {/* Выход */}
+      <line x1={800} y1={165} x2={980} y2={165} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      <text x={806} y={155} textAnchor="start" fontSize={11} fontFamily={FONT} fill="#222">Интерфейс</text>
+      <text x={806} y={168} textAnchor="start" fontSize={11} fontFamily={FONT} fill="#222">конкретного</text>
+      <text x={806} y={181} textAnchor="start" fontSize={11} fontFamily={FONT} fill="#222">пользователя</text>
     </svg>
   );
 }
@@ -267,69 +291,74 @@ function DiagramA21A23() {
    ════════════════════════════════ */
 function DiagramA31A34() {
   return (
-    <svg width={1060} height={360} style={{ display: "block" }}>
-      {/* A31 */}
-      <Block x={20} y={110} w={175} h={100} label={"Инициализация\nизменений\nданных"} code="A31" />
-      <Arrow x1={0} y1={160} x2={20} y2={160} />
-      <Label x={0} y={140} text="Интерфейс" anchor="start" />
-      <Label x={0} y={152} text="конкретного" anchor="start" />
-      <Label x={0} y={164} text="пользователя" anchor="start" />
-      <Arrow x1={108} y1={40} x2={108} y2={110} />
-      <Label x={108} y={28} text="Пользователь" />
-      {/* механизм A31 */}
-      <Arrow x1={80} y1={310} x2={80} y2={210} />
-      <Label x={80} y={322} text="React," multiline={["React,", "Tailwind"]} />
+    <svg width={1120} height={420} style={{ display: "block" }}>
+      {/* ── A31 ── */}
+      <Block x={20} y={130} w={185} h={100} label={"Инициализация\nизменений\nданных"} code="A31" />
+      {/* Вход: Интерфейс конкретного пользователя */}
+      <line x1={0} y1={180} x2={20} y2={180} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      <text x={0} y={158} textAnchor="start" fontSize={10} fontFamily={FONT} fill="#222">Интерфейс</text>
+      <text x={0} y={170} textAnchor="start" fontSize={10} fontFamily={FONT} fill="#222">конкретного</text>
+      <text x={0} y={182} textAnchor="start" fontSize={10} fontFamily={FONT} fill="#222">пользователя</text>
+      {/* Пользователь сверху */}
+      <text x={112} y={88} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">Пользователь</text>
+      <line x1={112} y1={92} x2={112} y2={130} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      {/* Механизм A31 */}
+      <line x1={90} y1={360} x2={90} y2={230} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      <text x={90} y={376} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">React /</text>
+      <text x={90} y={390} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">Tailwind</text>
 
       {/* A31 → A32 */}
-      <Arrow x1={195} y1={160} x2={280} y2={160} />
-      <Label x={200} y={152} text="Данные" anchor="start" />
-      <Label x={200} y={164} text="пользователя" anchor="start" />
+      <line x1={205} y1={180} x2={295} y2={180} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      <text x={210} y={172} textAnchor="start" fontSize={11} fontFamily={FONT} fill="#222">Данные</text>
+      <text x={210} y={185} textAnchor="start" fontSize={11} fontFamily={FONT} fill="#222">пользователя</text>
 
-      {/* A32 */}
-      <Block x={280} y={110} w={170} h={100} label={"Проверка\nкорректности\nданных"} code="A32" />
-      {/* механизмы A32 */}
-      <Arrow x1={320} y1={310} x2={320} y2={210} />
-      <Label x={320} y={322} text="Python" />
-      <Arrow x1={390} y1={310} x2={390} y2={210} />
-      <Label x={390} y={322} text="SQL" />
+      {/* ── A32 ── */}
+      <Block x={295} y={130} w={180} h={100} label={"Проверка\nкорректности\nданных"} code="A32" />
+      {/* Механизмы A32 */}
+      <line x1={340} y1={360} x2={340} y2={230} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      <text x={340} y={376} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">Python</text>
+      <line x1={410} y1={360} x2={410} y2={230} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      <text x={410} y={376} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">SQL</text>
 
       {/* A32 → A33 */}
-      <Arrow x1={450} y1={160} x2={540} y2={160} />
-      <Label x={455} y={150} text="Корректные" anchor="start" />
-      <Label x={455} y={162} text="данные" anchor="start" />
-      {/* Сетевые протоколы → A33 */}
-      <Arrow x1={610} y1={40} x2={610} y2={110} />
-      <Label x={610} y={28} text="HTTP / REST" multiline={["HTTP / REST", "протоколы"]} />
+      <line x1={475} y1={180} x2={565} y2={180} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      <text x={480} y={172} textAnchor="start" fontSize={11} fontFamily={FONT} fill="#222">Корректные</text>
+      <text x={480} y={185} textAnchor="start" fontSize={11} fontFamily={FONT} fill="#222">данные</text>
 
-      {/* A33 */}
-      <Block x={540} y={110} w={175} h={100} label={"Внесение\nизменений в БД"} code="A33" />
-      {/* механизмы A33 */}
-      <Arrow x1={575} y1={310} x2={575} y2={210} />
-      <Label x={575} y={322} text="Python" />
-      <Arrow x1={645} y1={310} x2={645} y2={210} />
-      <Label x={645} y={322} text="SQL" />
+      {/* ── A33 ── */}
+      <Block x={565} y={130} w={185} h={100} label={"Внесение\nизменений в БД"} code="A33" />
+      {/* HTTP/REST → A33 */}
+      <text x={657} y={82} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">HTTP / REST</text>
+      <text x={657} y={96} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">протоколы</text>
+      <line x1={657} y1={100} x2={657} y2={130} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      {/* Механизмы A33 */}
+      <line x1={600} y1={360} x2={600} y2={230} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      <text x={600} y={376} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">Python</text>
+      <line x1={670} y1={360} x2={670} y2={230} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      <text x={670} y={376} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">SQL</text>
 
       {/* A33 → A34 */}
-      <Arrow x1={715} y1={160} x2={800} y2={160} />
-      <Label x={720} y={150} text="Обновлённая" anchor="start" />
-      <Label x={720} y={162} text="БД" anchor="start" />
-      {/* Сетевые протоколы → A34 */}
-      <Arrow x1={880} y1={40} x2={880} y2={110} />
-      <Label x={880} y={28} text="HTTP / REST" multiline={["HTTP / REST", "протоколы"]} />
+      <line x1={750} y1={180} x2={835} y2={180} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      <text x={755} y={172} textAnchor="start" fontSize={11} fontFamily={FONT} fill="#222">Обновлённая</text>
+      <text x={755} y={185} textAnchor="start" fontSize={11} fontFamily={FONT} fill="#222">БД</text>
 
-      {/* A34 */}
-      <Block x={800} y={110} w={185} h={100} label={"Обновление\nинтерфейса\nи отчётности"} code="A34" />
-      {/* механизмы A34 */}
-      <Arrow x1={840} y1={310} x2={840} y2={210} />
-      <Label x={840} y={322} text="Python" />
-      <Arrow x1={910} y1={310} x2={910} y2={210} />
-      <Label x={910} y={322} text="React" />
-      {/* выходы */}
-      <Arrow x1={985} y1={145} x2={1060} y2={145} />
-      <Label x={988} y={138} text="Отчётность" anchor="start" />
-      <Arrow x1={985} y1={185} x2={1060} y2={185} />
-      <Label x={988} y={178} text="Интерфейс" anchor="start" />
-      <Label x={988} y={190} text="сайта" anchor="start" />
+      {/* ── A34 ── */}
+      <Block x={835} y={130} w={195} h={100} label={"Обновление\nинтерфейса\nи отчётности"} code="A34" />
+      {/* HTTP/REST → A34 */}
+      <text x={932} y={82} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">HTTP / REST</text>
+      <text x={932} y={96} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">протоколы</text>
+      <line x1={932} y1={100} x2={932} y2={130} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      {/* Механизмы A34 */}
+      <line x1={875} y1={360} x2={875} y2={230} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      <text x={875} y={376} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">Python</text>
+      <line x1={960} y1={360} x2={960} y2={230} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      <text x={960} y={376} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">React</text>
+      {/* Выходы */}
+      <line x1={1030} y1={158} x2={1120} y2={158} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      <text x={1034} y={150} textAnchor="start" fontSize={11} fontFamily={FONT} fill="#222">Отчётность</text>
+      <line x1={1030} y1={202} x2={1120} y2={202} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#ah)" />
+      <text x={1034} y={194} textAnchor="start" fontSize={11} fontFamily={FONT} fill="#222">Интерфейс</text>
+      <text x={1034} y={207} textAnchor="start" fontSize={11} fontFamily={FONT} fill="#222">сайта</text>
     </svg>
   );
 }
