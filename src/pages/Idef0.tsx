@@ -335,6 +335,97 @@ function DiagramA31A34() {
 }
 
 /* ════════════════════════════════
+   DFD — Рис. 15
+   ════════════════════════════════ */
+function DiagramDFD() {
+  // Элементы:
+  // Внешние сущности (прямоугольники): Клиент, Администратор сайта
+  // Процессы (скруглённые прямоугольники): "Вызов наполнения раздела сайта", "Изменение наполнения раздела сайта"
+  // Хранилище (две горизонтальные линии): "База данных сайта (PostgreSQL)"
+
+  const EXT_W = 150, EXT_H = 70;
+  const PROC_W = 200, PROC_H = 70;
+  const STORE_W = 300, STORE_H = 44;
+
+  // координаты
+  const clientX = 40, clientY = 60;
+  const procTopX = 360, procTopY = 40;
+  const storeX = 310, storeY = 230;
+  const adminX = 40, adminY = 420;
+  const procBotX = 360, procBotY = 400;
+
+  return (
+    <svg width={660} height={540} style={{ display: "block" }}>
+      <defs>
+        <marker id="dfd-arr" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L8,3 z" fill={ARROW_COLOR} />
+        </marker>
+      </defs>
+
+      {/* ── Внешняя сущность: Клиент ── */}
+      <rect x={clientX} y={clientY} width={EXT_W} height={EXT_H} fill={BLOCK_FILL} stroke={BLOCK_STROKE} strokeWidth={1.5} />
+      <text x={clientX + EXT_W / 2} y={clientY + EXT_H / 2 + 5} textAnchor="middle" fontSize={13} fontFamily={FONT} fill="#111">Клиент</text>
+
+      {/* ── Процесс верхний: Вызов наполнения ── */}
+      <rect x={procTopX} y={procTopY} width={PROC_W} height={PROC_H} rx={14} fill={BLOCK_FILL} stroke={BLOCK_STROKE} strokeWidth={1.5} />
+      <text x={procTopX + PROC_W / 2} y={procTopY + 24} textAnchor="middle" fontSize={12} fontFamily={FONT} fill="#111">Вызов наполнения</text>
+      <text x={procTopX + PROC_W / 2} y={procTopY + 40} textAnchor="middle" fontSize={12} fontFamily={FONT} fill="#111">раздела сайта</text>
+      <text x={procTopX + PROC_W / 2} y={procTopY + 56} textAnchor="middle" fontSize={10} fontFamily={FONT} fill="#555">(React → Python-функция)</text>
+
+      {/* ── Хранилище: БД ── */}
+      <line x1={storeX} y1={storeY} x2={storeX + STORE_W} y2={storeY} stroke={BLOCK_STROKE} strokeWidth={1.5} />
+      <line x1={storeX} y1={storeY + STORE_H} x2={storeX + STORE_W} y2={storeY + STORE_H} stroke={BLOCK_STROKE} strokeWidth={1.5} />
+      <text x={storeX + STORE_W / 2} y={storeY + 18} textAnchor="middle" fontSize={12} fontFamily={FONT} fill="#111">База данных сайта</text>
+      <text x={storeX + STORE_W / 2} y={storeY + 34} textAnchor="middle" fontSize={10} fontFamily={FONT} fill="#555">(PostgreSQL)</text>
+
+      {/* ── Процесс нижний: Изменение наполнения ── */}
+      <rect x={procBotX} y={procBotY} width={PROC_W} height={PROC_H} rx={14} fill={BLOCK_FILL} stroke={BLOCK_STROKE} strokeWidth={1.5} />
+      <text x={procBotX + PROC_W / 2} y={procBotY + 24} textAnchor="middle" fontSize={12} fontFamily={FONT} fill="#111">Изменение наполнения</text>
+      <text x={procBotX + PROC_W / 2} y={procBotY + 40} textAnchor="middle" fontSize={12} fontFamily={FONT} fill="#111">раздела сайта</text>
+      <text x={procBotX + PROC_W / 2} y={procBotY + 56} textAnchor="middle" fontSize={10} fontFamily={FONT} fill="#555">(Python-функция → PostgreSQL)</text>
+
+      {/* ── Внешняя сущность: Администратор ── */}
+      <rect x={adminX} y={adminY} width={EXT_W} height={EXT_H} fill={BLOCK_FILL} stroke={BLOCK_STROKE} strokeWidth={1.5} />
+      <text x={adminX + EXT_W / 2} y={adminY + 28} textAnchor="middle" fontSize={13} fontFamily={FONT} fill="#111">Администратор</text>
+      <text x={adminX + EXT_W / 2} y={adminY + 46} textAnchor="middle" fontSize={13} fontFamily={FONT} fill="#111">сайта</text>
+
+      {/* ═══ СТРЕЛКИ ═══ */}
+
+      {/* Клиент → Вызов наполнения */}
+      <line x1={clientX + EXT_W} y1={clientY + EXT_H / 2} x2={procTopX} y2={procTopY + PROC_H / 2} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#dfd-arr)" />
+      <text x={220} y={68} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">Интересующий</text>
+      <text x={220} y={82} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">раздел сайта</text>
+
+      {/* Вызов наполнения ↓ → БД (запрос данных) */}
+      <line x1={procTopX + 60} y1={procTopY + PROC_H} x2={storeX + 60} y2={storeY} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#dfd-arr)" />
+      {/* подпись слева от стрелки */}
+      <text x={398} y={155} textAnchor="end" fontSize={11} fontFamily={FONT} fill="#222" transform="rotate(-90,398,155)">Данные о необходимой</text>
+      <text x={398} y={170} textAnchor="end" fontSize={11} fontFamily={FONT} fill="#222" transform="rotate(-90,398,170)">информации</text>
+
+      {/* БД ↑ → Вызов наполнения (ответ) */}
+      <line x1={storeX + 110} y1={storeY} x2={procTopX + 110} y2={procTopY + PROC_H} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#dfd-arr)" />
+      <text x={480} y={145} textAnchor="start" fontSize={11} fontFamily={FONT} fill="#222" transform="rotate(90,480,145)">Данные для</text>
+      <text x={480} y={160} textAnchor="start" fontSize={11} fontFamily={FONT} fill="#222" transform="rotate(90,480,160)">наполнения раздела</text>
+
+      {/* Администратор → Изменение наполнения */}
+      <line x1={adminX + EXT_W} y1={adminY + EXT_H / 2} x2={procBotX} y2={procBotY + PROC_H / 2} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#dfd-arr)" />
+      <text x={255} y={428} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">Новые или изменённые</text>
+      <text x={255} y={442} textAnchor="middle" fontSize={11} fontFamily={FONT} fill="#222">данные</text>
+
+      {/* Изменение наполнения ↑ → БД (запись) */}
+      <line x1={storeX + 180} y1={storeY + STORE_H} x2={procBotX + 120} y2={procBotY} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#dfd-arr)" />
+      <text x={462} y={340} textAnchor="end" fontSize={11} fontFamily={FONT} fill="#222" transform="rotate(-90,462,340)">Новые или изменённые</text>
+      <text x={462} y={356} textAnchor="end" fontSize={11} fontFamily={FONT} fill="#222" transform="rotate(-90,462,356)">данные</text>
+
+      {/* БД ↓ → Изменение наполнения (подтверждение) */}
+      <line x1={storeX + 230} y1={storeY + STORE_H} x2={procBotX + 170} y2={procBotY} stroke={ARROW_COLOR} strokeWidth={1.5} markerEnd="url(#dfd-arr)" />
+      <text x={538} y={330} textAnchor="start" fontSize={11} fontFamily={FONT} fill="#222" transform="rotate(90,538,330)">Сообщение об</text>
+      <text x={538} y={346} textAnchor="start" fontSize={11} fontFamily={FONT} fill="#222" transform="rotate(90,538,346)">успешном изменении</text>
+    </svg>
+  );
+}
+
+/* ════════════════════════════════
    Главная страница
    ════════════════════════════════ */
 const DIAGRAMS = [
@@ -372,6 +463,7 @@ const DIAGRAMS = [
     desc: "A31 — инициализация изменений, A32 — валидация Python, A33 — обновление PostgreSQL, A34 — обновление интерфейса React.",
     component: <DiagramA31A34 />,
     w: 1060,
+    section: "",
   },
 ];
 
@@ -412,6 +504,22 @@ export default function Idef0() {
             </div>
           </div>
         ))}
+
+        {/* 2.3 DFD */}
+        <div>
+          <h1 className="text-2xl font-bold mb-1">2.3. Модель информационных потоков</h1>
+          <p className="text-sm text-muted-foreground">Диаграмма потоков данных (DFD). Внешние сущности: Клиент и Администратор сайта. Хранилище: PostgreSQL. Процессы реализованы через Python-функции.</p>
+        </div>
+
+        <div className="space-y-3">
+          <div>
+            <p className="text-xs text-muted-foreground uppercase tracking-wide">Рис. 15</p>
+            <h2 className="text-lg font-semibold">Модель информационных потоков разрабатываемой ИС</h2>
+          </div>
+          <div className="overflow-x-auto bg-white border border-gray-200 rounded-lg p-6">
+            <DiagramDFD />
+          </div>
+        </div>
       </div>
     </div>
   );
