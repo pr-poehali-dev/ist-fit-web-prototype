@@ -2,6 +2,33 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Icon from "@/components/ui/icon";
 
+function downloadSvgAsPng(svgEl: SVGSVGElement | null, filename: string) {
+  if (!svgEl) return;
+  const w = svgEl.width.baseVal.value || 1300;
+  const h = svgEl.height.baseVal.value || 680;
+  const scale = 2;
+  const xml = new XMLSerializer().serializeToString(svgEl);
+  const blob = new Blob([xml], { type: "image/svg+xml;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const img = new Image();
+  img.onload = () => {
+    const canvas = document.createElement("canvas");
+    canvas.width = w * scale;
+    canvas.height = h * scale;
+    const ctx = canvas.getContext("2d")!;
+    ctx.scale(scale, scale);
+    ctx.fillStyle = "#f3f4f6";
+    ctx.fillRect(0, 0, w, h);
+    ctx.drawImage(img, 0, 0);
+    URL.revokeObjectURL(url);
+    const a = document.createElement("a");
+    a.download = filename;
+    a.href = canvas.toDataURL("image/png");
+    a.click();
+  };
+  img.src = url;
+}
+
 const TEAL = "#0ea5a0";
 const BLUE = "#4a90d9";
 const HEADER_BG = "#1a3a5c";
@@ -159,14 +186,23 @@ export default function DbSchemaSchedule() {
           <span className="text-base font-semibold tracking-widest" style={{ color: TEAL, fontFamily: "'Oswald', sans-serif" }}>
             IST<span className="text-foreground"> FIT</span>
           </span>
-          <span className="text-sm text-muted-foreground">/ Схема БД — Расписание</span>
-          <div className="ml-auto flex items-center gap-5 text-xs text-muted-foreground">
-            <span className="flex items-center gap-1.5"><span style={{ color: "#f59e0b" }}>🔑</span> Первичный ключ</span>
-            <span className="flex items-center gap-1.5"><span style={{ color: "#8b5cf6", fontSize: 13 }}>■</span> Внешний ключ</span>
-            <span className="flex items-center gap-1.5"><span style={{ color: "#6366f1", fontSize: 13 }}>◆</span> Индекс</span>
-            <span className="flex items-center gap-1.5"><span style={{ color: "#94a3b8", fontSize: 13 }}>○</span> Поле</span>
-            <span className="text-gray-300">|</span>
-            <span>Таблицы можно перетаскивать</span>
+          <span className="text-sm text-muted-foreground">/ Рис. 18 — Схема БД расписания</span>
+          <div className="ml-auto flex items-center gap-4">
+            <div className="flex items-center gap-4 text-xs text-muted-foreground">
+              <span className="flex items-center gap-1.5"><span style={{ color: "#f59e0b" }}>🔑</span> PK</span>
+              <span className="flex items-center gap-1.5"><span style={{ color: "#8b5cf6", fontSize: 13 }}>■</span> FK</span>
+              <span className="flex items-center gap-1.5"><span style={{ color: "#6366f1", fontSize: 13 }}>◆</span> Index</span>
+              <span className="flex items-center gap-1.5"><span style={{ color: "#94a3b8", fontSize: 13 }}>○</span> Field</span>
+              <span className="text-gray-300">|</span>
+              <span>Перетаскивайте таблицы</span>
+            </div>
+            <button
+              onClick={() => downloadSvgAsPng(svgRef.current, "db-schema-рис18.png")}
+              className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-md border border-gray-200 bg-white hover:bg-gray-50 text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <Icon name="Download" size={13} />
+              Скачать PNG
+            </button>
           </div>
         </div>
       </div>
