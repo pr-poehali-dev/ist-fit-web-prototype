@@ -42,57 +42,57 @@ const TABLES: Table[] = [
   {
     id: "timetable", label: "fitness", entity: "timetable", x: 520, y: 20,
     fields: [
-      { name: "ID", type: "int(11)", kind: "pk" },
-      { name: "time", type: "varchar(25)", kind: "plain" },
-      { name: "day", type: "char(2)", kind: "plain" },
-      { name: "name", type: "varchar(25)", kind: "plain" },
-      { name: "trainerID", type: "int(11)", kind: "fk" },
-      { name: "locationID", type: "int(11)", kind: "fk" },
+      { name: "id", type: "integer", kind: "pk" },
+      { name: "time", type: "varchar(20)", kind: "plain" },
+      { name: "day", type: "varchar(5)", kind: "plain" },
+      { name: "name", type: "varchar(255)", kind: "plain" },
+      { name: "trainer_id", type: "integer", kind: "fk" },
+      { name: "location_id", type: "integer", kind: "fk" },
     ],
   },
   {
     id: "trainers", label: "fitness", entity: "trainers", x: 240, y: 240,
     fields: [
-      { name: "ID", type: "int(11)", kind: "pk" },
-      { name: "name", type: "varchar(50)", kind: "plain" },
-      { name: "experience", type: "int(11)", kind: "index" },
-      { name: "text", type: "varchar(1000)", kind: "plain" },
+      { name: "id", type: "integer", kind: "pk" },
+      { name: "name", type: "varchar(255)", kind: "plain" },
+      { name: "experience", type: "varchar(100)", kind: "index" },
+      { name: "text", type: "text", kind: "plain" },
     ],
   },
   {
     id: "locations", label: "fitness", entity: "locations", x: 800, y: 240,
     fields: [
-      { name: "ID", type: "int(11)", kind: "pk" },
-      { name: "name", type: "varchar(50)", kind: "plain" },
-      { name: "square", type: "int(11)", kind: "index" },
-      { name: "text", type: "varchar(1000)", kind: "plain" },
+      { name: "id", type: "integer", kind: "pk" },
+      { name: "name", type: "varchar(255)", kind: "plain" },
+      { name: "square", type: "varchar(50)", kind: "index" },
+      { name: "text", type: "text", kind: "plain" },
     ],
   },
   {
     id: "trainers_pic", label: "fitness", entity: "trainers_pic", x: 20, y: 420,
     fields: [
-      { name: "ID", type: "int(11)", kind: "pk" },
-      { name: "date", type: "datetime", kind: "plain" },
-      { name: "img", type: "varchar(1000)", kind: "plain" },
-      { name: "trainerID", type: "int(11)", kind: "fk" },
+      { name: "id", type: "integer", kind: "pk" },
+      { name: "date", type: "date", kind: "plain" },
+      { name: "img", type: "text", kind: "plain" },
+      { name: "trainer_id", type: "integer", kind: "fk" },
     ],
   },
   {
     id: "locations_pic", label: "fitness", entity: "locations_pic", x: 1020, y: 420,
     fields: [
-      { name: "ID", type: "int(11)", kind: "pk" },
-      { name: "date", type: "datetime", kind: "plain" },
-      { name: "img", type: "varchar(1000)", kind: "plain" },
-      { name: "locationID", type: "int(11)", kind: "fk" },
+      { name: "id", type: "integer", kind: "pk" },
+      { name: "date", type: "date", kind: "plain" },
+      { name: "img", type: "text", kind: "plain" },
+      { name: "location_id", type: "integer", kind: "fk" },
     ],
   },
 ];
 
 const LINKS: Link[] = [
-  { from: "timetable", fromField: "trainerID", to: "trainers", toField: "ID" },
-  { from: "timetable", fromField: "locationID", to: "locations", toField: "ID" },
-  { from: "trainers", fromField: "ID", to: "trainers_pic", toField: "trainerID" },
-  { from: "locations", fromField: "ID", to: "locations_pic", toField: "locationID" },
+  { from: "timetable", fromField: "trainer_id", to: "trainers", toField: "id" },
+  { from: "timetable", fromField: "location_id", to: "locations", toField: "id" },
+  { from: "trainers", fromField: "id", to: "trainers_pic", toField: "trainer_id" },
+  { from: "locations", fromField: "id", to: "locations_pic", toField: "location_id" },
 ];
 
 const TABLE_W = 230;
