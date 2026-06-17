@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import Admin from "./pages/Admin";
 import DbSchema from "./pages/DbSchema";
 import DbSchemaSchedule from "./pages/DbSchemaSchedule";
+import Idef0 from "./pages/Idef0";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -23,6 +24,7 @@ const App = () => (
           <Route path="/admin" element={<Admin />} />
           <Route path="/db-schema" element={<DbSchema />} />
           <Route path="/db-schema-schedule" element={<DbSchemaSchedule />} />
+          <Route path="/idef0" element={<Idef0 />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
